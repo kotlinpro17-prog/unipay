@@ -1,0 +1,79 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top shadow-sm">
+    <div class="container-fluid">
+        <span class="navbar-brand fw-bold">
+            <i class="fas fa-graduation-cap me-2"></i>بوابة القبول الموحد
+        </span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav align-items-center">
+                {% if user.is_authenticated and user.role == 'STUDENT' and not is_public_page %}
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle text-white position-relative" href="#" role="button"
+                        data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fa-lg"></i>
+                        {% if unread_notifications_count > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ unread_notifications_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 300px;">
+                        <li class="dropdown-header">الإشعارات الجديدة</li>
+                        {% for notification in unread_notifications %}
+                        <li><a class="dropdown-item d-flex align-items-start"
+                                href="{{ notification.link|default:'#' }}">
+                                <div class="bg-light p-2 rounded-circle me-2"><i
+                                        class="fas fa-info-circle text-primary"></i></div>
+                                <div>
+                                    <small class="d-block fw-bold">{{ notification.title }}</small>
+                                    <small class="text-muted">{{ notification.message }}</small>
+                                </div>
+                            </a></li>
+                        {% empty %}
+                        <li class="dropdown-item text-center text-muted">لا توجد إشعارات جديدة</li>
+                        {% endfor %}
+                        {% if unread_notifications_count > 0 %}
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-center small text-primary"
+                                href="{% url 'student_notifications' %}">عرض
+                                الكل</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                        <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=random"
+                            class="rounded-circle me-1" width="32" height="32">
+                        {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'student_dashboard' %}">لوحة التحكم</a></li>
+                        <li><a class="dropdown-item" href="{% url 'student_settings' %}">إعدادات الحساب</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger">تسجيل الخروج</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-white fw-bold" href="{% url 'student_login' %}">تسجيل الدخول</a>
+                </li>
+                <li class="nav-item ms-2">
+                    <a class="nav-link btn btn-light text-success fw-bold px-3 rounded-pill"
+                        href="{% url 'student_signup' %}">حساب جديد</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

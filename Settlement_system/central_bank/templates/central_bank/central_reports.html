@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التقارير والرقابة | Reports & Audit</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h4 class="fw-bold mb-0"><i class="fas fa-university me-2"></i> البنك المركزي</h4>
+                <small class="text-white-50">نظام الرقابة المالية الموحد</small>
+            </div>
+            <ul class="list-unstyled components">
+                <li><a href="central_dashboard.html"><i class="fas fa-tachometer-alt"></i> نظرة عامة</a></li>
+                <li><a href="central_banks.html"><i class="fas fa-landmark"></i> إدارة البنوك الوسيطة</a></li>
+                <li><a href="central_wallets.html"><i class="fas fa-wallet"></i> رقابة المحافظ (Wallets)</a></li>
+                <li><a href="central_transactions.html"><i class="fas fa-search-dollar"></i> مراقبة العمليات</a></li>
+                <li><a href="central_settlement.html" class="text-warning"><i class="fas fa-exchange-alt"></i> نظام
+                        المقاصة (Clearing)</a></li>
+                <li><a href="central_licensing.html"><i class="fas fa-certificate"></i> التراخيص والامتثال</a></li>
+                <li class="active"><a href="central_reports.html"><i class="fas fa-file-invoice-dollar"></i> التقارير
+                        والرقابة</a></li>
+            </ul>
+            <div class="mt-auto p-3">
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light w-100 btn-sm">
+                        <i class="fas fa-sign-out-alt me-2"></i> تسجيل خروج
+                    </button>
+                </form>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-link text-dark"><i
+                            class="fas fa-bars fa-lg"></i></button>
+                    <span class="navbar-brand ms-3 fw-bold">التقارير والرقابة</span>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm text-center p-4 h-100">
+                            <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                            <h5 class="fw-bold">التقرير الشهري العام</h5>
+                            <p class="text-muted small">ملخص شامل لأداء النظام المالي، حجم السيولة، والعمليات.</p>
+                            <button class="btn btn-outline-dark btn-sm rounded-pill mt-auto">تحميل PDF</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm text-center p-4 h-100">
+                            <i class="fas fa-user-shield fa-3x text-danger mb-3"></i>
+                            <h5 class="fw-bold">تقرير غسيل الأموال (AML)</h5>
+                            <p class="text-muted small">كشف العمليات المشبوهة والمحافظ تحت المراقبة.</p>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill mt-auto">تصدير بيانات</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm text-center p-4 h-100">
+                            <i class="fas fa-exchange-alt fa-3x text-success mb-3"></i>
+                            <h5 class="fw-bold">سجل المقاصة اليومي</h5>
+                            <p class="text-muted small">تفاصيل التسويات المالية بين البنوك خلال آخر 24 ساعة.</p>
+                            <button class="btn btn-outline-success btn-sm rounded-pill mt-auto">عرض السجل</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="fw-bold mb-0">إنشاء تقرير مخصص</h5>
+                    </div>
+                    <div class="card-body">
+                        <form class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">نوع البيانات</label>
+                                <select class="form-select">
+                                    <option>حركة السيولة</option>
+                                    <option>عدد المستخدمين الجدد</option>
+                                    <option>المخالفات المسجلة</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">الفترة الزمنية</label>
+                                <select class="form-select">
+                                    <option>آخر شهر</option>
+                                    <option>الربع الأول</option>
+                                    <option>السنة الحالية</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">التنسيق</label>
+                                <select class="form-select">
+                                    <option>PDF Document</option>
+                                    <option>Excel Spreadsheet</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button class="btn btn-primary px-4"><i class="fas fa-cogs me-2"></i> توليد
+                                    التقرير</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('sidebarCollapse').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

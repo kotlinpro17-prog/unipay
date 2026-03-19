@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+
+            <h2 class="mb-5 mt-5 fw-bold" style="color: #2c3e50;">البطاقة الجامعية الرقمية</h2>
+
+            <div class="id-card-container mx-auto d-flex flex-wrap justify-content-center gap-4">
+                <!-- Front Side Wrapper -->
+                <div class="card-wrapper text-center">
+                    <div class="id-card front mb-2">
+                        <div class="card-header-bg"></div>
+
+                        <div class="university-logo">
+                            {% if university.logo %}
+                            <img src="{{ university.logo.url }}" alt="University Logo">
+                            {% else %}
+                            <div class="placeholder-logo"><i class="fas fa-university"></i></div>
+                            {% endif %}
+                        </div>
+
+                        <div class="student-photo">
+                            <div class="photo-frame">
+                                {% if student_photo %}
+                                <img src="{{ student_photo.file.url }}" alt="Student Photo">
+                                {% else %}
+                                <img src="https://ui-avatars.com/api/?name={{ student_name }}&background=0D8ABC&color=fff&size=200"
+                                    alt="Student Photo">
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Redesigned Student Info Section -->
+                        <div class="student-info-grid w-100 px-4">
+                            <div class="row text-center gy-3">
+                                <div class="col-12">
+                                    <small class="text-muted d-block" style="font-size: 0.6rem;">اسم الطالب</small>
+                                    <span class="fw-bold student-name-text">{{ student_name }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block" style="font-size: 0.6rem;">الكلية</small>
+                                    <span class="fw-bold" style="font-size: 0.8rem;">{{ college_name }}</span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block" style="font-size: 0.6rem;">التخصص</small>
+                                    <span class="fw-bold" style="font-size: 0.8rem;">{{ major_name }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer-strip"></div>
+                    </div>
+                    <h5 class="fw-bold mt-2 text-muted">الأمام</h5>
+                </div>
+
+                <!-- Back Side Wrapper -->
+                <div class="card-wrapper text-center">
+                    <div class="id-card back mb-2">
+                        <div class="card-header-bg"></div>
+
+                        <div class="content-wrapper">
+                            <div class="qr-code-section">
+                                <!-- QR Code -->
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ enrollment.university_id }}"
+                                    alt="QR Code" class="qr-img">
+                            </div>
+
+                            <!-- Academic Number under QR Code -->
+                            <div class="academic-id-section mt-1">
+                                <h4 class="academic-id" style="letter-spacing: 2px;">{{ enrollment.university_id }}</h4>
+                            </div>
+
+                            <!-- New Academic Details -->
+                            <div class="academic-details-grid mt-2 px-4 w-100">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size: 0.6rem;">العام
+                                            الجامعي</small>
+                                        <span class="fw-bold" style="font-size: 0.8rem;">{{ academic_year }}</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size: 0.6rem;">المستوى</small>
+                                        <span class="fw-bold" style="font-size: 0.8rem;">{{ student_level }}</span>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block" style="font-size: 0.6rem;">سنة
+                                            الالتحاق</small>
+                                        <span class="fw-bold" style="font-size: 0.8rem;">{{ enrollment_year }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Instructions List -->
+                            <div class="instructions-section mt-4 px-3 text-start w-100">
+                                <h6 class="mb-1 fw-bold" style="color: #1e3c72; font-size: 0.75rem;">تعليمات:</h6>
+                                <ul class="list-unstyled mb-0" style="font-size: 0.65rem; color: #555;">
+                                    <li class="mb-1">1- يجب إبراز البطاقة عند دخول الحرم الجامعي.</li>
+                                    <li class="mb-1">2- هذه البطاقة صالحة للاستخدام داخل الجامعة فقط.</li>
+                                    <li class="mb-1">3- هذه البطاقة صادرة من عمادة القبول والتسجيل وتعتبر وثيقة رسمية.
+                                    </li>
+                                    <li class="mb-0">4- مدة صلاحية البطاقة سنة واحدة فقط.</li>
+                                </ul>
+                                <div class="university-website mt-2 text-center border-top pt-1">
+                                    <small class="text-primary fw-bold"
+                                        style="direction: ltr; display: inline-block;">{{ uni_website }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer-strip"></div>
+                    </div>
+                    <h5 class="fw-bold mt-2 text-muted">الخلف</h5>
+                </div>
+                <hr class="my-5 opacity-25">
+
+                <div class="flippable-section mb-5">
+                    <h4 class="fw-bold mb-4" style="color: #2c3e50;">البطاقة التفاعلية (اقلب البطاقة بالماوس)</h4>
+
+                    <div class="flip-card mx-auto">
+                        <div class="flip-card-inner">
+                            <!-- Front Face -->
+                            <div class="flip-card-front">
+                                <div class="id-card">
+                                    <div class="card-header-bg"></div>
+                                    <div class="university-logo">
+                                        {% if university.logo %}
+                                        <img src="{{ university.logo.url }}" alt="University Logo">
+                                        {% else %}
+                                        <div class="placeholder-logo"><i class="fas fa-university"></i></div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="student-photo">
+                                        <div class="photo-frame">
+                                            {% if student_photo %}
+                                            <img src="{{ student_photo.file.url }}" alt="Student Photo">
+                                            {% else %}
+                                            <img src="https://ui-avatars.com/api/?name={{ student_name }}&background=0D8ABC&color=fff&size=200"
+                                                alt="Student Photo">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="student-info-grid w-100 px-4">
+                                        <div class="row text-center gy-3">
+                                            <div class="col-12">
+                                                <small class="text-muted d-block" style="font-size: 0.6rem;">اسم
+                                                    الطالب</small>
+                                                <span class="fw-bold student-name-text">{{ student_name }}</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted d-block"
+                                                    style="font-size: 0.6rem;">الكلية</small>
+                                                <span class="fw-bold" style="font-size: 0.8rem;">{{ college_name }}</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted d-block"
+                                                    style="font-size: 0.6rem;">التخصص</small>
+                                                <span class="fw-bold" style="font-size: 0.8rem;">{{ major_name }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer-strip"></div>
+                                </div>
+                            </div>
+
+                            <!-- Back Face -->
+                            <div class="flip-card-back">
+                                <div class="id-card back">
+                                    <div class="card-header-bg"></div>
+                                    <div class="content-wrapper">
+                                        <div class="qr-code-section">
+                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ enrollment.university_id }}"
+                                                alt="QR Code" class="qr-img">
+                                        </div>
+                                        <div class="academic-id-section mt-1">
+                                            <h4 class="academic-id" style="letter-spacing: 2px;">{{ enrollment.university_id }}</h4>
+
+                                        </div>
+                                        <div class="academic-details-grid mt-2 px-4 w-100">
+                                            <div class="row text-center">
+                                                <div class="col-4">
+                                                    <small class="text-muted d-block" style="font-size: 0.6rem;">العام
+                                                        الجامعي</small>
+                                                    <span class="fw-bold" style="font-size: 0.8rem;">{{ academic_year }}</span>
+
+                                                </div>
+                                                <div class="col-4">
+                                                    <small class="text-muted d-block"
+                                                        style="font-size: 0.6rem;">المستوى</small>
+                                                        <span class="fw-bold" style="font-size: 0.8rem;">{{ student_level }}</span>
+
+                                                </div>
+                                                <div class="col-4">
+                                                    <small class="text-muted d-block" style="font-size: 0.6rem;">سنة
+                                                        الالتحاق</small>
+                                                                                            <span class="fw-bold" style="font-size: 0.8rem;">{{ enrollment_year }}</span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="instructions-section mt-4 px-3 text-start w-100">
+                                            <h6 class="mb-1 fw-bold" style="color: #1e3c72; font-size: 0.75rem;">
+                                                تعليمات:</h6>
+                                            <ul class="list-unstyled mb-0" style="font-size: 0.65rem; color: #555;">
+                                                <li class="mb-1">1- يجب إبراز البطاقة عند دخول الحرم الجامعي.</li>
+                                                <li class="mb-1">2- هذه البطاقة صالحة للاستخدام داخل الجامعة فقط.</li>
+                                                <li class="mb-1">3- هذه البطاقة صادرة من عمادة القبول والتسجيل وتعتبر
+                                                    وثيقة رسمية.</li>
+                                                <li class="mb-0">4- مدة صلاحية البطاقة سنة واحدة فقط.</li>
+                                            </ul>
+                                            <div class="university-website mt-2 text-center border-top pt-1">
+                                                <small class="text-primary fw-bold"
+                                        style="direction: ltr; display: inline-block;">{{ uni_website }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer-strip"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 action-buttons d-print-none">
+                    <button onclick="window.print()" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
+                        <i class="fas fa-print me-2"></i> طباعة البطاقة
+                    </button>
+                    <a href="{% url 'student_dashboard' %}"
+                        class="btn btn-light btn-lg rounded-pill px-5 shadow-sm ms-3">
+                        العودة للرئيسية
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.id-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                // Limit rotation to a reasonable degree
+                const rotateX = (centerY - y) / 10;
+                const rotateY = (x - centerX) / 10;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+            });
+        });
+    </script>
+
+    <style>
+        /* Premium ID Card Styles */
+        .id-card-container {
+            max-width: 900px;
+            /* Widened to allow two 350px cards + gap */
+            width: 100%;
+            perspective: 1000px;
+            /* Enable perspective for 3D effect */
+        }
+
+        .card-wrapper {
+            width: 350px;
+            flex: 0 0 350px;
+            /* Force fixed width, do not shrink or grow */
+        }
+
+        .id-card {
+            position: relative;
+            width: 350px;
+            /* Enforce exact width */
+            height: 420px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            direction: rtl;
+            /* Ensure RTL layout */
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .id-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Flip Card Specific Styles */
+        .flip-card {
+            background-color: transparent;
+            width: 350px;
+            height: 420px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Decorative Elements */
+        .card-header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 90px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 0 0 50% 10% / 0 0 20px 20px;
+            /* Asymmetric curve */
+            z-index: 1;
+        }
+
+        .card-footer-strip {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: #cca43b;
+            /* Gold */
+            z-index: 1;
+        }
+
+        /* Front Content */
+        .university-logo {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            /* Left aligned for RTL */
+            z-index: 2;
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 24px;
+            color: #1e3c72;
+        }
+
+        .university-logo img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        .student-photo {
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            /* Right aligned for RTL */
+            z-index: 3;
+        }
+
+        .photo-frame {
+            width: 110px;
+            height: 135px;
+            border: 4px solid white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .student-info-grid {
+            margin-top: 200px;
+            /* Starts nicely below the photo */
+            z-index: 2;
+            position: relative;
+        }
+
+        .student-name-text {
+            font-size: 1.0rem;
+            color: #333;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* Back Content */
+        .back {
+            align-items: center;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .back .card-header-bg {
+            height: 20px;
+            border-radius: 0;
+            background: #1e3c72;
+        }
+
+        .content-wrapper {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            z-index: 2;
+            padding-bottom: 20px;
+        }
+
+        .qr-img {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .academic-id {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #1e3c72;
+            background: #eef2f7;
+            padding: 2px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 1rem;
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            .id-card-container,
+            .id-card-container * {
+                visibility: visible;
+            }
+
+            .id-card-container {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .id-card {
+                border: 1px solid #000;
+                margin-bottom: 20px;
+                page-break-inside: avoid;
+                background: #fff !important;
+                /* Force background print */
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+    {% endblock %}

@@ -1,0 +1,284 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مراقبة العمليات | Transactions Oversight</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0d1b2a;
+            --secondary-color: #1b263b;
+            --accent-color: #00b4d8;
+            --success-color: #2a9d8f;
+            --warning-color: #e9c46a;
+            --danger-color: #e76f51;
+            --light-bg: #f8f9fa;
+            --text-color: #333;
+            --sidebar-width: 280px;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            direction: rtl;
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            background: var(--primary-color);
+            color: #fff;
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #sidebar ul.components {
+            padding: 20px 0;
+        }
+
+        #sidebar ul li a {
+            padding: 15px 20px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        #sidebar ul li a:hover,
+        #sidebar ul li.active>a {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        #content {
+            width: 100%;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        .navbar {
+            padding: 15px 10px;
+            background: #fff;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: var(--card-shadow);
+        }
+
+        .badg-type {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper d-flex">
+        <!-- Sidebar -->
+        {% include 'includes/central_sidebar.html' %}
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-link text-dark"><i
+                            class="fas fa-bars fa-lg"></i></button>
+                    <span class="navbar-brand ms-3 fw-bold">سجل العمليات المركزي (Oversight Ledger)</span>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+
+                <!-- Global Stats -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center bg-white p-3 rounded shadow-sm card">
+                            <div class="flex-shrink-0 bg-success-subtle text-success rounded p-3 me-3"><i
+                                    class="fas fa-arrow-down fa-lg"></i></div>
+                            <div>
+                                <small class="text-muted d-block">إيداعات اليوم</small>
+                                <h4 class="mb-0 fw-bold">{{ today_deposits }} <small class="fs-6 text-muted">YER</small>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center bg-white p-3 rounded shadow-sm card">
+                            <div class="flex-shrink-0 bg-danger-subtle text-danger rounded p-3 me-3"><i
+                                    class="fas fa-arrow-up fa-lg"></i></div>
+                            <div>
+                                <small class="text-muted d-block">سحوبات اليوم</small>
+                                <h4 class="mb-0 fw-bold">{{ today_withdrawals }} <small
+                                        class="fs-6 text-muted">YER</small></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center bg-white p-3 rounded shadow-sm card">
+                            <div class="flex-shrink-0 bg-secondary-subtle text-secondary rounded p-3 me-3"><i
+                                    class="fas fa-hashtag fa-lg"></i></div>
+                            <div>
+                                <small class="text-muted d-block">إجمالي العمليات</small>
+                                <h4 class="mb-0 fw-bold">{{ total_count }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <form method="get" class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">نوع العملية</label>
+                                <select name="type" class="form-select form-select-sm">
+                                    <option value="الكل">الكل</option>
+                                    <option value="DEPOSIT" {% if request.GET.type == 'DEPOSIT' %}selected{% endif %}>
+                                        إيداع (Deposit)
+                                    </option>
+                                    <option value="WITHDRAWAL" {% if request.GET.type == 'WITHDRAWAL' %}selected{% endif %}>
+                                        سحب (Withdraw)
+                                    </option>
+                                    <option value="TRANSFER" {% if request.GET.type == 'TRANSFER' %}selected{% endif %}>
+                                        تحويل (Transfer)
+                                    </option>
+                                    <option value="PAYMENT" {% if request.GET.type == 'PAYMENT' %}selected{% endif %}>
+                                        دفع (Payment)
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted">البنك الوسيط</label>
+                                <select name="bank" class="form-select form-select-sm">
+                                    <option value="الكل">الكل</option>
+                                    {% for bank in banks %}
+                                    <option value="{{ bank.id }}" {% if request.GET.bank|stringformat:"s" == bank.id|stringformat:"s" %}selected{% endif %}>{{ bank.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary btn-sm w-100"><i
+                                        class="fas fa-filter me-1"></i> تصفية</button>
+                            </div>
+                            <div class="col-md-1 d-flex align-items-end">
+                                <a href="{% url 'central_transactions' %}"
+                                    class="btn btn-outline-secondary btn-sm w-100">إعادة</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="card border-0 shadow-sm">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Ref ID</th>
+                                    <th>التوقيت</th>
+                                    <th>النوع</th>
+                                    <th>المبلغ</th>
+                                    <th>البنك / الحسابات</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for txn in transactions %}
+                                <tr>
+                                    <td class="font-monospace small text-muted">{{ txn.transaction_id|stringformat:".8s" }}...</td>
+                                    <td>{{ txn.timestamp|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        {% if txn.transaction_type == 'DEPOSIT' %}
+                                            <span class="badg-type bg-success-subtle text-success border border-success">إيداع</span>
+                                        {% elif txn.transaction_type == 'WITHDRAWAL' %}
+                                            <span class="badg-type bg-danger-subtle text-danger border border-danger">سحب</span>
+                                        {% elif txn.transaction_type == 'TRANSFER' %}
+                                            <span class="badg-type bg-primary-subtle text-primary border border-primary">تحويل</span>
+                                        {% else %}
+                                            <span class="badg-type bg-info-subtle text-info border border-info">{{ txn.get_transaction_type_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fw-bold">{{ txn.amount }}
+                                        <small>{{ txn.sender_wallet.currency|default:"YER" }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="small">
+                                            {% if txn.sender_wallet %}
+                                                <span class="badge bg-light text-dark border">{{ txn.sender_wallet.commercial_bank.name }}</span>
+                                                <i class="fas fa-arrow-left text-muted mx-1"></i>
+                                            {% endif %}
+                                            {% if txn.receiver_wallet %}
+                                                <span class="badge bg-light text-dark border">{{ txn.receiver_wallet.commercial_bank.name }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if txn.status == 'COMPLETED' %}
+                                            <span class="badge bg-success">مكتملة</span>
+                                        {% elif txn.status == 'PENDING' %}
+                                            <span class="badge bg-warning text-dark">قيد الانتظار</span>
+                                        {% elif txn.status == 'AWAITING_SETTLEMENT' %}
+                                            <span class="badge bg-info text-dark">بانتظار المقاصة</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ txn.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'central_transaction_detail' txn.transaction_id %}"
+                                            class="btn btn-sm btn-link text-dark"><i class="fas fa-eye"></i></a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="fas fa-info-circle fa-2x mb-3 d-block"></i>
+                                        لا توجد عمليات مطابقة لمعايير البحث.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'includes/tab_session_js.html' %}
+    <script>
+        document.getElementById('sidebarCollapse').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الكليات - {{ university.name }}{% endblock %}
+
+{% block navbar %}
+{% include 'student/includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 80px;">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'university_list' %}">الجامعات</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ university.name }}</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4 fw-bold text-success">
+        <i class="fas fa-graduation-cap me-2"></i>كليات {{ university.name }}
+    </h2>
+
+    <div class="row g-4">
+        {% for college in colleges %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-light p-3 rounded-circle text-success me-3">
+                            <i class="fas fa-building fa-2x"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-0">{{ college.name }}</h5>
+                    </div>
+                    <p class="card-text text-muted">{{ college.description|default:"لا يوجد وصف متاح"|truncatewords:20}}</p>
+                    <a href="{% url 'major_list' college.id %}" class="btn btn-outline-success w-100 mt-3">
+                        عرض التخصصات <i class="fas fa-arrow-left ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">لا توجد كليات مسجلة في هذه الجامعة حالياً.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'wallet/bank_dashboard.html' %}
+{% load static %}
+
+{% block title %}الإعدادات | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark"><i class="fas fa-cogs me-2"></i> إعدادات البنك</h3>
+        <p class="text-muted">تخصيص خصائص النظام والمنتجات</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="fw-bold m-0 text-primary">العلامة التجارية للمحفظة</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label for="wallet_name" class="form-label fw-bold">اسم منتج المحفظة الموحد</label>
+                            <input type="text" class="form-control form-control-lg" id="wallet_name"
+                                name="wallet_product_name" value="{{ bank.wallet_product_name }}"
+                                placeholder="مثال: جوالي، محفظتي، ..." required>
+                            <div class="form-text mt-2">
+                                <i class="fas fa-info-circle text-info"></i>
+                                سيظهر هذا الاسم في جميع واجهات النظام بدلاً من أسماء المحافظ الفردية.
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <button type="submit" class="btn btn-primary px-4 fw-bold">
+                            <i class="fas fa-save me-2"></i> حفظ الإعدادات
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

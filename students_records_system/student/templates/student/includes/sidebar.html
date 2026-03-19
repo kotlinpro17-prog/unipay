@@ -1,0 +1,120 @@
+<!-- Sidebar -->
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-white">
+    <div class="pt-4 px-3">
+        <!-- Main Navigation Section -->
+        <div class="mb-4">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-2 mb-3 text-muted text-uppercase small fw-bold"
+                style="letter-spacing: 1px;">
+                <span>القائمة الرئيسية</span>
+            </h6>
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'student_dashboard' %}">
+                        <i class="fas fa-th-large ms-3"></i>
+                        الرئيسية
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'high_school_profile' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'high_school_profile' %}">
+                        <i class="fas fa-user-graduate ms-3"></i>
+                        بيانات الثانوية
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'university_list' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'university_list' %}">
+                        <i class="fas fa-university ms-3"></i>
+                        التقديم للجامعات
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        {% if enrollment and enrollment.status == 'ACTIVE' %}
+        <!-- Academic Section -->
+        <div class="mb-4">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-2 mb-3 text-muted text-uppercase small fw-bold"
+                style="letter-spacing: 1px;">
+                <span>السجل الأكاديمي والمالي</span>
+            </h6>
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'my_courses' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'my_courses' %}">
+                        <i class="fas fa-book-open ms-3"></i>
+                        موادي الدراسية
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'my_transcript' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'my_transcript' %}">
+                        <i class="fas fa-file-alt ms-3"></i>
+                        السجل الأكاديمي
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'my_fees' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'my_fees' %}">
+                        <i class="fas fa-receipt ms-3"></i>
+                        السجل المالي
+                    </a>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Support & Updates Section -->
+        <div class="mb-4">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-2 mb-3 text-muted text-uppercase small fw-bold"
+                style="letter-spacing: 1px;">
+                <span>المتابعة والتواصل</span>
+            </h6>
+            <ul class="nav flex-column gap-1">
+                {% if has_accepted_application %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'documents' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'documents' %}">
+                        <i class="fas fa-cloud-upload-alt ms-3"></i>
+                        رفع الوثائق
+                    </a>
+                </li>
+                {% endif %}
+                {% if applications_count > 0 %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'application_list' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'application_list' %}">
+                        <i class="fas fa-tasks ms-3"></i>
+                        حالة الطلب
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'student_notifications' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'student_notifications' %}">
+                        <i class="fas fa-bell ms-3"></i>
+                        الإشعارات
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Account Section -->
+        <div class="mt-auto">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-2 mb-3 text-muted text-uppercase small fw-bold"
+                style="letter-spacing: 1px;">
+                <span>إعدادات الحساب</span>
+            </h6>
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'student_settings' %}active{% endif %} d-flex align-items-center"
+                        href="{% url 'student_settings' %}">
+                        <i class="fas fa-user-cog ms-3"></i>
+                        الإعدادات
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

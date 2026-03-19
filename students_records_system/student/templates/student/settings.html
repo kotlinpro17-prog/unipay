@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إعدادات الحساب - بوابة القبول الموحد{% endblock %}
+
+{% block navbar %}
+{% include 'student/includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'student/includes/sidebar.html' %}
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5 pt-4">
+<div class="" style="margin-top: 100px; margin-bottom: 50px;">
+    <div class="row">
+        <!-- Sidebar Navigation (Optional or just for layout) -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow"
+                            style="width: 80px; height: 80px; font-size: 32px;">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted small mb-3">{{ user.email }}</p>
+                    <div class="badge bg-light text-primary border border-primary px-3 py-2">حساب طالب</div>
+
+                    <hr class="my-4 op-1">
+
+                    <div class="list-group list-group-flush text-end">
+                        <a href="#personal-info"
+                            class="list-group-item list-group-item-action border-0 py-3 rounded-3 mb-2 active">
+                            <i class="fas fa-user-circle me-2"></i>البيانات الشخصية
+                        </a>
+                        <a href="#security-settings"
+                            class="list-group-item list-group-item-action border-0 py-3 rounded-3 mb-2">
+                            <i class="fas fa-shield-alt me-2"></i>الأمان وإدارة الحساب
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <!-- التحقق من الرسائل -->
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm rounded-3 mb-4"
+                role="alert">
+                <i
+                    class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-triangle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <!-- Personal Information Section -->
+            <div id="personal-info" class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white py-3 border-bottom border-light">
+                    <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-id-card me-2 text-primary"></i>تحديث البيانات
+                        الشخصية</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="first_name" class="form-label fw-bold small text-muted">الاسم الأول</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i
+                                            class="fas fa-user text-muted"></i></span>
+                                    <input type="text" class="form-control bg-light border-0 py-2" id="first_name"
+                                        name="first_name" value="{{ user.first_name }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label fw-bold small text-muted">اسم العائلة</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i
+                                            class="fas fa-user text-muted"></i></span>
+                                    <input type="text" class="form-control bg-light border-0 py-2" id="last_name"
+                                        name="last_name" value="{{ user.last_name }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="email" class="form-label fw-bold small text-muted">البريد الإلكتروني</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i
+                                        class="fas fa-envelope text-muted"></i></span>
+                                <input type="email" class="form-control bg-light border-0 py-2" id="email" name="email"
+                                    value="{{ user.email }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="phone_number" class="form-label fw-bold small text-muted">رقم الهاتف</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i
+                                            class="fas fa-phone text-muted"></i></span>
+                                    <input type="text" class="form-control bg-light border-0 py-2" id="phone_number"
+                                        name="phone_number" value="{{ profile.phone_number }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="address" class="form-label fw-bold small text-muted">العنوان</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i
+                                            class="fas fa-map-marker-alt text-muted"></i></span>
+                                    <input type="text" class="form-control bg-light border-0 py-2" id="address"
+                                        name="address" value="{{ profile.address }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top border-light">
+                            <a href="{% url 'student_dashboard' %}" class="btn btn-light px-4 py-2">إلغاء</a>
+                            <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm fw-bold">
+                                <i class="fas fa-save me-2"></i>حفظ التغييرات
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Section -->
+            <div id="security-settings" class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-white py-3 border-bottom border-light">
+                    <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-lock me-2 text-danger"></i>الأمان وإدارة الحساب
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3 mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-1 text-dark">كلمة المرور</h6>
+                            <p class="text-muted small mb-0">قم بتأمين حسابك بتغيير كلمة المرور بشكل دوري</p>
+                        </div>
+                        <a href="{% url 'change_password' %}"
+                            class="btn btn-outline-danger btn-sm px-4 fw-bold shadow-sm">تغيير كلمة المرور</a>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
+                        <div>
+                            <h6 class="fw-bold mb-1 text-dark">جلسات النشاط</h6>
+                            <p class="text-muted small mb-0">يمكنك تسجيل الخروج من كافة الأجهزة الأخرى</p>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm px-4 fw-bold" disabled>قادماً قريباً</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </main>
+    </div>
+</div>
+{% endblock %}

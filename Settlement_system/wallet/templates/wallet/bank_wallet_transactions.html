@@ -1,0 +1,135 @@
+{% extends 'wallet/bank_dashboard.html' %}
+{% load static %}
+
+{% block title %}سجل العمليات | Transaction Logs{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold"><i class="fas fa-history me-2"></i> سجل العمليات</h3>
+            {% with w_name=wallet.user.first_name w_user=wallet.user.username %}
+            <p class="text-muted mb-0">للمحفظة: {{ w_name|default:w_user }}</p>
+            {% endwith %}
+        </div>
+        <a href="{% url 'bank_wallets' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-right me-2"></i> عودة للقائمة
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="py-3 px-4">رقم العملية</th>
+                            <th class="py-3">النوع</th>
+                            <th class="py-3">الوارد/الصادر</th>
+                            <th class="py-3">المبلغ</th>
+                            <th class="py-3">الحالة</th>
+                            <th class="py-3">التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for txn in transactions %}
+                        <tr>
+                            <td class="px-4 font-monospace small">#{{ txn.id }}</td>
+                            <td>
+                                {% if txn.transaction_type == 'TRANSFER' %}
+                                <span class="badge bg-info bg-opacity-10 text-info">تحويل</span>
+                                {% elif txn.transaction_type == 'DEPOSIT' %}
+                                <span class="badge bg-success bg-opacity-10 text-success">إيداع</span>
+                                {% elif txn.transaction_type == 'WITHDRAWAL' %}
+                                <span class="badge bg-danger bg-opacity-10 text-danger">سحب</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ txn.transaction_type }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if txn.sender_wallet == wallet %}
+                                <span class="text-danger"><i class="fas fa-arrow-up me-1"></i> صادر</span>
+                                <small class="d-block text-muted">
+                                    إلى:
+                                    {% if txn.receiver_wallet %}
+                                    {{ txn.receiver_wallet.user.first_name|default:txn.receiver_wallet.user.username }}
+                                    {% if txn.receiver_wallet.user.phone_number %}
+                                    <br><span class="opacity-75" style="font-size: 0.75rem;" dir="ltr">
+                                        {{ txn.receiver_wallet.user.phone_number }}
+                                    </span>
+                                    {% endif %}
+                                    {% else %}
+                                    خارج النظام / نقد
+                                    {% endif %}
+                                </small>
+                                {% else %}
+                                <span class="text-success"><i class="fas fa-arrow-down me-1"></i> وارد</span>
+                                <small class="d-block text-muted">
+                                    من:
+                                    {% if txn.sender_wallet %}
+                                    {{ txn.sender_wallet.user.first_name|default:txn.sender_wallet.user.username }}
+                                    {% if txn.sender_wallet.user.phone_number %}
+                                    <br><span class="opacity-75" style="font-size: 0.75rem;" dir="ltr">
+                                        {{ txn.sender_wallet.user.phone_number }}
+                                    </span>
+                                    {% endif %}
+                                    {% else %}
+                                    نظام / إيداع
+                                    {% endif %}
+                                </small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span
+                                    class="fw-bold {% if txn.sender_wallet == wallet %}text-danger{% else %}text-success{% endif %}">
+                                    {{ txn.amount }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if txn.status == 'COMPLETED' %}
+                                <span class="badge bg-success">مكتملة</span>
+                                {% elif txn.status == 'PENDING' or txn.status == 'AWAITING_SETTLEMENT' %}
+                                <span class="badge bg-warning text-dark">قيد المعالجة</span>
+                                {% else %}
+                                <span class="badge bg-danger">فشلت</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted small">
+                                {{ txn.timestamp|date:"Y-m-d H:i" }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="fas fa-inbox fa-3x mb-3 d-block opacity-50"></i>
+                                لا توجد عمليات مسجلة لهذه المحفظة حتى الآن
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if is_paginated %}
+        <div class="card-footer bg-white py-3">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">السابق</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item disabled"><span class="page-link">صفحة {{ page_obj.number }} من {{
+                            page_obj.paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">التالي</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

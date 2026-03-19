@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كشف حساب مالي - {{ student.user.get_full_name }}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-color: #fff;
+        }
+
+        .statement-container {
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #1a237e;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .university-info h1 {
+            margin: 0;
+            color: #1a237e;
+            font-size: 24px;
+        }
+
+        .university-info p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .statement-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .statement-title h2 {
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1a237e;
+            border-bottom: 1px solid #ddd;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .student-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            font-size: 14px;
+        }
+
+        .detail-item strong {
+            color: #555;
+            display: inline-block;
+            width: 120px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th {
+            background-color: #1a237e;
+            color: white;
+            text-align: right;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .debit {
+            color: #d32f2f;
+        }
+
+        .credit {
+            color: #388e3c;
+        }
+
+        .balance {
+            font-weight: bold;
+            color: #1a237e;
+        }
+
+        .summary-totals {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .summary-box {
+            width: 250px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            border-top: 2px solid #1a237e;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #1a237e;
+        }
+
+        .footer {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .signature-block {
+            text-align: center;
+            width: 200px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #333;
+            margin-top: 50px;
+            padding-top: 5px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            .statement-container {
+                box-shadow: none;
+                border: none;
+                max-width: 100%;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+        }
+
+        .no-print-btn {
+            background-color: #1a237e;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .no-print-btn:hover {
+            background-color: #0d1642;
+        }
+
+        .print-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="print-controls no-print">
+        <button onclick="window.print()" class="no-print-btn">طباعة الكشف (PDF)</button>
+        <button onclick="window.history.back()" class="no-print-btn" style="background-color: #666;">العودة</button>
+    </div>
+
+    <div class="statement-container">
+        <div class="header">
+            <div class="university-info">
+                <h1>{{ university.name }}</h1>
+                <p>{{ university.description|truncatewords:10 }}</p>
+                {% if university.website %}<p>{{ university.website }}</p>{% endif %}
+            </div>
+            <div class="logo">
+                {% if university.logo %}
+                <img src="{{ university.logo.url }}" alt="Logo" style="max-height: 80px;">
+                {% else %}
+                <div style="font-weight: bold; color: #1a237e; font-size: 32px;">LOGO</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="statement-title">
+            <h2>كشف حساب مالي رسمي</h2>
+        </div>
+
+        <div class="student-details">
+            <div class="detail-item">
+                <strong>اسم الطالب:</strong>
+                {{ student.user.get_full_name|default:student.user.username }}
+            </div>
+            <div class="detail-item">
+                <strong>الرقم الجامعي:</strong>
+                {{ enrollment.university_id|default:"---" }}
+            </div>
+            <div class="detail-item">
+                <strong>التخصص:</strong>
+                {{ enrollment.major.name }}
+            </div>
+            <div class="detail-item">
+                <strong>تاريخ الطباعة:</strong>
+                {{ print_date|date:"Y/m/d H:i" }}
+            </div>
+            <div class="detail-item">
+                <strong>الوضع الأكاديمي:</strong>
+                {{ enrollment.get_status_display }}
+            </div>
+            <div class="detail-item">
+                <strong>السنة/الفصل:</strong>
+                سنة {{ enrollment.current_year }} - فصل {{ enrollment.get_current_semester_display }}
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th width="15%">التاريخ</th>
+                    <th width="35%">البيان / الوصف</th>
+                    <th width="15%" class="text-center">مدين</th>
+                    <th width="15%" class="text-center">دائن</th>
+                    <th width="20%" class="text-center">الرصيد</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trans in statement %}
+                <tr>
+                    <td>{{ trans.date|date:"Y/m/d" }}</td>
+                    <td>{{ trans.description }}</td>
+                    <td class="text-center debit">
+                        {% if trans.debit > 0 %}
+                        {{ trans.debit|floatformat:2 }}
+                        <div style="font-size: 10px; color: #888;">$ {{ trans.debit_usd|floatformat:2 }}</div>
+                        {% else %}-{% endif %}
+                    </td>
+                    <td class="text-center credit">
+                        {% if trans.credit > 0 %}
+                        {{ trans.credit|floatformat:2 }}
+                        <div style="font-size: 10px; color: #888;">$ {{ trans.credit_usd|floatformat:2 }}</div>
+                        {% else %}-{% endif %}
+                    </td>
+                    <td class="text-center balance">
+                        {{ trans.balance|floatformat:2 }}
+                        <div style="font-size: 11px; color: #666; font-weight: normal;">$ {{trans.balance_usd|floatformat:2 }}</div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="summary-totals">
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>إجمالي المطالبات:</span>
+                    <div class="text-end">
+                        <span class="debit">{{ total_charges|floatformat:2 }} {{ currency_symbol }}</span>
+                        <div style="font-size: 12px; color: #888;">$ {{ total_charges_usd|floatformat:2 }}</div>
+                    </div>
+                </div>
+                <div class="summary-row">
+                    <span>إجمالي المدفوعات:</span>
+                    <div class="text-end">
+                        <span class="credit">{{ total_payments|floatformat:2 }} {{ currency_symbol }}</span>
+                        <div style="font-size: 12px; color: #888;">$ {{ total_payments_usd|floatformat:2 }}</div>
+                    </div>
+                </div>
+                <div class="summary-row total">
+                    <span>الرصيد النهائي:</span>
+                    <div class="text-end">
+                        <div>{{ current_balance|floatformat:2 }} {{ currency_symbol }}</div>
+                        <div style="font-size: 13px; font-weight: normal;">$ {{ current_balance_usd|floatformat:2 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="info-footer">
+                <p>ملاحظة: هذا الكشف يعتبر وثيقة رسمية صادرة الكترونياً.</p>
+                <p>تم استخراج هذا الكشف عبر بوابة القبول الموحد.</p>
+            </div>
+            <div class="signature-block">
+                <div class="signature-line">ختم وتوقيع المالية</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

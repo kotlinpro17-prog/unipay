@@ -1,0 +1,244 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فتح حساب بنكي للجامعة - البنك الوسيط</title>
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@600&family=Tajawal:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        /* Reusing styles from bank_login.html */
+        .login-container-corporate {
+            height: 100vh !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background-color: #f8f9fa !important;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 180, 216, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 180, 216, 0.05) 0%, transparent 40%) !important;
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            overflow: hidden !important;
+        }
+
+        .corporate-glass-card {
+            background: #14213d !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(0, 180, 216, 0.3) !important;
+            border-radius: 16px !important;
+            padding: 3.5rem !important;
+            width: 90% !important;
+            max-width: 550px !important;
+            /* Slightly wider for messages */
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2) !important;
+            position: relative !important;
+            z-index: 10000 !important;
+        }
+
+        .cyan-accent-line {
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #00b4d8 0%, #90e0ef 100%);
+            margin: 1.5rem auto;
+            border-radius: 2px;
+        }
+
+        .corporate-input {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            padding: 1.1rem !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .corporate-input:focus {
+            border-color: #00b4d8 !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.15) !important;
+            outline: none;
+        }
+
+        .btn-corporate {
+            background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 1.1rem;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .btn-corporate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 180, 216, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .link-cyan {
+            color: #90e0ef;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .industrial-pattern {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            opacity: 0.03 !important;
+            pointer-events: none !important;
+            background-image:
+                linear-gradient(rgba(0, 180, 216, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 180, 216, 0.2) 1px, transparent 1px) !important;
+            background-size: 40px 40px !important;
+        }
+
+        /* Form Label Override for dark bg */
+        .form-label {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container-corporate">
+        <div class="industrial-pattern"></div>
+
+        <div class="corporate-glass-card animate-fade-in text-center">
+            <div class="mb-4">
+                <div class="d-inline-block p-3 rounded-circle mb-3" style="background: rgba(0, 180, 216, 0.1);">
+                    <i class="fas fa-university fa-3x"
+                        style="color: #00b4d8; filter: drop-shadow(0 0 8px rgba(0, 180, 216, 0.4));"></i>
+                </div>
+                <h4 style="font-family: 'Outfit', sans-serif; color: #ffffff; letter-spacing: 1px; font-weight: 600;">
+                    فتح حساب بنكي للجامعة
+                </h4>
+                <div class="cyan-accent-line"></div>
+            </div>
+
+            {% if error %}
+            <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-25 text-white mb-4">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            {% if form.errors %}
+            <div
+                class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-25 text-white mb-4 text-start small">
+                <div class="fw-bold mb-2"><i class="fas fa-exclamation-triangle me-2"></i> يرجى تصحيح الأخطاء التالية:
+                </div>
+                <ul class="mb-0 ps-3">
+                    {% for field in form %}
+                    {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if step == 1 %}
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="step" value="1">
+                <div class="mb-4 text-start">
+                    <label class="form-label">رمز الجامعة (University Code)</label>
+                    <input type="text" name="university_code" class="corporate-input w-100"
+                        placeholder="e.g. UNI-2024-XXXX" required>
+                </div>
+                <button type="submit" class="btn-corporate w-100 mb-3">
+                    تحقق ومتابعة
+                </button>
+            </form>
+            <p class="text-white-50 small">
+                يستخدم هذا الخيار لربط الأنظمة الجامعية بالبنك. يجب أن تمتلك كود تفعيل ساري.
+            </p>
+
+            {% elif step == 2 %}
+            <div
+                class="alert bg-success bg-opacity-10 border-success border-opacity-25 text-white mb-4 small text-start">
+                <i class="fas fa-check-circle me-2"></i> تم التحقق من: <strong>{{ university_name }}</strong>
+                <br>
+                <i class="fas fa-info-circle me-2 mt-2"></i> يرجى إكمال إعداد بيانات محفظة الجامعة أدناه.
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="step" value="2">
+                <h6 class="text-white text-start mb-3"><i class="fas fa-user-shield me-2"></i> بيانات الحساب الجديد</h6>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label">البنك المراد فتح الحساب فيه</label>
+                    {{ form.commercial_bank }}
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label">اسم المستخدم (للدخول)</label>
+                    {{ form.username }}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3 text-start">
+                        <label class="form-label">كلمة المرور</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="col-md-6 mb-3 text-start">
+                        <label class="form-label">تأكيد كلمة المرور</label>
+                        {{ form.confirm_password }}
+                    </div>
+                </div>
+
+                <div class="mb-4 text-start">
+                    <label class="form-label">رقم الهاتف للتحصيل (Phone Number)</label>
+                    {{ form.phone_number }}
+                    <div class="form-text text-white-50 small mt-1">
+                        سيتم اعتماد هذا الرقم لتعريف الجامعة لدى الطلاب.
+                    </div>
+                </div>
+                <button type="submit" class="btn-corporate w-100 mb-3">
+                    تأكيد وفتح الحساب
+                </button>
+            </form>
+            {% endif %}
+
+            <div class="text-center pt-4" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                <a href="{% url 'login' %}" class="link-cyan">
+                    <i class="fas fa-arrow-right me-2"></i> العودة لتسجيل الدخول
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

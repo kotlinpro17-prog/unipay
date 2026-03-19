@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تفاصيل الطلب - بوابة القبول الموحد{% endblock %}
+
+{% block navbar %}
+{% include 'student/includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'student/includes/sidebar.html' %}
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5 pt-4">
+<div class="" >
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-success"><i class="fas fa-file-alt me-2"></i>تفاصيل الطلب</h2>
+        <a href="{% url 'application_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-right me-2"></i>العودة للقائمة
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Application Info Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>معلومات الطلب</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted small">الجامعة</label>
+                            <p class="fw-bold">{{ application.major.university.name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">الكلية</label>
+                            <p class="fw-bold">{{ application.major.college.name|default:"غير محدد" }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="text-muted small">التخصص</label>
+                            <p class="fw-bold">{{ application.major.name }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted small">تاريخ التقديم</label>
+                            <p class="fw-bold">{{ application.applied_at|date:"Y-m-d H:i" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">آخر تحديث</label>
+                            <p class="fw-bold">{{ application.updated_at|date:"Y-m-d H:i" }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="text-muted small">الحالة</label>
+                            <p>
+                                {% if application.status == 'PENDING' %}
+                                <span class="badge bg-warning text-dark fs-6">قيد المراجعة</span>
+                                {% elif application.status == 'ACCEPTED' %}
+                                <span class="badge bg-success fs-6">مقبول</span>
+                                {% elif application.status == 'REJECTED' %}
+                                <span class="badge bg-danger fs-6">مرفوض</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Major Details Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>تفاصيل التخصص</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="text-muted small">وصف التخصص</label>
+                            <p>{{ application.major.description|default:"لا يوجد وصف متاح" }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="text-muted small">الطاقة الاستيعابية</label>
+                            <p class="fw-bold">{{ application.major.capacity }} طالب</p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small">إجمالي رسوم التخصص</label>
+                            <p class="fw-bold text-success">$ {{ application.major.price_usd }}</p>
+                            <div class="small text-muted" style="margin-top: -15px;">({{ local_price|floatformat:2 }} {{currency_symbol }})</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small">الحد الأدنى للمعدل</label>
+                            <p class="fw-bold">{{ application.major.min_gpa }}%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Status Timeline Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-tasks me-2"></i>حالة الطلب</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="timeline-marker bg-success text-white rounded-circle p-2 me-3">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">تم التقديم</h6>
+                                    <small class="text-muted">{{ application.applied_at|date:"Y-m-d" }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if application.status == 'PENDING' %}
+                        <div class="timeline-item mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="timeline-marker bg-warning text-white rounded-circle p-2 me-3">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">قيد المراجعة</h6>
+                                    <small class="text-muted">جاري التدقيق</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% elif application.status == 'ACCEPTED' %}
+                        <div class="timeline-item mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="timeline-marker bg-success text-white rounded-circle p-2 me-3">
+                                    <i class="fas fa-check-double"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">تم القبول</h6>
+                                    <small class="text-muted">{{ application.updated_at|date:"Y-m-d" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% elif application.status == 'REJECTED' %}
+                        <div class="timeline-item mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="timeline-marker bg-danger text-white rounded-circle p-2 me-3">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">تم الرفض</h6>
+                                    <small class="text-muted">{{ application.updated_at|date:"Y-m-d" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-cog me-2"></i>الإجراءات</h5>
+                </div>
+                <div class="card-body">
+                    {% if application.status == 'ACCEPTED' %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        تهانينا! تم قبولك في هذا التخصص
+                    </div>
+                    <a href="{% url 'print_acceptance' application.id %}" class="btn btn-success w-100 mb-2"
+                        target="_blank">
+                        <i class="fas fa-print me-2"></i>طباعة القبول
+                    </a>
+                    {% elif application.status == 'REJECTED' %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        نأسف، لم يتم قبولك في هذا التخصص
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        طلبك قيد المراجعة من قبل الجامعة
+                    </div>
+                    {% endif %}
+
+                    <a href="{% url 'application_list' %}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-list me-2"></i>عرض جميع الطلبات
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline-marker {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+        </main>
+    </div>
+</div>
+{% endblock %}

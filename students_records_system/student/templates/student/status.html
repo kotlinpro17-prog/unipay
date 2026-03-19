@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حالة الطلب - بوابة القبول الموحد</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .timeline {
+            border-right: 3px solid #e9ecef;
+            padding-right: 30px;
+            position: relative;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            right: -39px;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #e9ecef;
+            z-index: 1;
+        }
+
+        .timeline-item.active::before {
+            background: #198754;
+            border-color: #198754;
+            box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.2);
+        }
+
+        .timeline-item.completed::before {
+            background: #198754;
+            border-color: #198754;
+        }
+
+        .timeline-item.completed .timeline-line {
+            background: #198754;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand fw-bold">
+                <i class="fas fa-graduation-cap me-2"></i>بوابة القبول الموحد
+            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav align-items-center">
+                    <!-- User Menu -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="https://ui-avatars.com/api/?name=Ahmed+Mohamed&background=random"
+                                class="rounded-circle me-1" width="32" height="32">
+                            أحمد محمد
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="settings.html">إعدادات الحساب</a></li>
+                            <li><a class="dropdown-item text-danger" href="../index.html">تسجيل الخروج</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-white p-3 shadow-sm"
+                style="min-height: calc(100vh - 60px);">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="dashboard.html">
+                                <i class="fas fa-home me-3 text-muted"></i>
+                                الرئيسية
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="profile.html">
+                                <i class="fas fa-user-edit me-3 text-muted"></i>
+                                بيانات الثانوية
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="universities.html">
+                                <i class="fas fa-university me-3 text-muted"></i>
+                                التقديم للجامعات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="documents.html">
+                                <i class="fas fa-file-upload me-3 text-muted"></i>
+                                رفع الوثائق
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active d-flex align-items-center rounded" href="status.html">
+                                <i class="fas fa-clipboard-list me-3 text-success"></i>
+                                حالة الطلب
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="notifications.html">
+                                <i class="fas fa-bell me-3 text-muted"></i>
+                                الإشعارات
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <h6
+                                class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                                <span>الحساب</span>
+                            </h6>
+                            <a class="nav-link d-flex align-items-center rounded" href="settings.html">
+                                <i class="fas fa-cog me-3 text-muted"></i>
+                                الإعدادات
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5">
+                <div class="d-flex justify-content-between align-items-center pt-4 pb-3 mb-4 border-bottom sticky-top bg-light mx-n4 px-4" style="z-index: 1010; top: 60px; box-shadow: 0 10px 10px -10px rgba(0,0,0,0.05);">
+                    <div>
+                        <h1 class="h2 fw-bold text-dark">متابعة حالة الطلب</h1>
+                        <p class="text-muted">رقم الطلب: <span class="fw-bold text-dark">#REQ-2025-8842</span></p>
+                    </div>
+                    <div>
+                        <span class="badge bg-warning text-dark fs-6 px-3 py-2">تحت المراجعة</span>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Timeline Column -->
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="fw-bold mb-0">سجل النشاط</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="timeline me-4 mt-3">
+
+                                    <!-- Step 1: Submitted -->
+                                    <div class="timeline-item completed">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="fw-bold text-success mb-1">تم تقديم الطلب</h6>
+                                                <p class="text-muted small mb-0">تم استلام طلبك بنجاح من قبل النظام</p>
+                                            </div>
+                                            <span class="text-muted small">01 أغسطس - 10:30 ص</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 2: Under Review -->
+                                    <div class="timeline-item active">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="fw-bold text-success mb-1">قيد المراجعة والتدقيق</h6>
+                                                <p class="mb-2 small">يقوم موظفو القبول بمراجعة البيانات والوثائق
+                                                    المرفقة.</p>
+                                                <div
+                                                    class="alert alert-info small py-2 px-3 d-inline-block border-0 mb-0">
+                                                    <i class="fas fa-info-circle me-1"></i> يرجى الانتظار، تستغرق هذه
+                                                    العملية عادةً 2-3 أيام عمل.
+                                                </div>
+                                            </div>
+                                            <span class="text-success small fw-bold">الآن</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 3: Conditional Acceptance (Future) -->
+                                    <div class="timeline-item">
+                                        <div class="d-flex justify-content-between opacity-50">
+                                            <div>
+                                                <h6 class="fw-bold mb-1">القبول المبدئي</h6>
+                                                <p class="text-muted small mb-0">بانتظار الموافقة المبدئية</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 4: Payment (Future) -->
+                                    <div class="timeline-item">
+                                        <div class="d-flex justify-content-between opacity-50">
+                                            <div>
+                                                <h6 class="fw-bold mb-1">سداد الرسوم</h6>
+                                                <p class="text-muted small mb-0">مطلوب سداد رسوم التسجيل</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 5: Final (Future) -->
+                                    <div class="timeline-item">
+                                        <div class="d-flex justify-content-between opacity-50">
+                                            <div>
+                                                <h6 class="fw-bold mb-1">القبول النهائي</h6>
+                                                <p class="text-muted small mb-0">إصدار بطاقة التنسيق</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details & Actions Column -->
+                    <div class="col-lg-4">
+                        <!-- Application Info -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white py-3">
+                                <h6 class="fw-bold mb-0">تفاصيل الطلب</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-3 border-bottom pb-2">
+                                        <small class="text-muted d-block">الجامعة</small>
+                                        <span class="fw-bold">جامعة عدن</span>
+                                    </li>
+                                    <li class="mb-3 border-bottom pb-2">
+                                        <small class="text-muted d-block">الكلية</small>
+                                        <span class="fw-bold">كلية الهندسة</span>
+                                    </li>
+                                    <li class="mb-3 border-bottom pb-2">
+                                        <small class="text-muted d-block">التخصص (الرغبة الأولى)</small>
+                                        <span class="fw-bold text-primary">هندسة حاسوب</span>
+                                    </li>
+                                    <li>
+                                        <small class="text-muted d-block">تاريخ التقديم</small>
+                                        <span class="fw-bold">01/08/2025</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- University Messages -->
+                        <div class="card border-0 shadow-sm bg-white mb-4">
+                            <div class="card-header bg-white py-3">
+                                <h6 class="fw-bold mb-0 text-dark"><i class="fas fa-envelope-open-text me-2"></i>رسائل
+                                    الجامعة</h6>
+                            </div>
+                            <div class="card-body">
+                                <div
+                                    class="alert alert-light border border-start-0 border-end-0 border-top-0 border-bottom border-secondary mb-0">
+                                    <small class="text-muted d-block mb-1">02 أغسطس - شؤون الطلاب</small>
+                                    <p class="mb-0 small">"عزيزي الطالب، يرجى التأكد من وضوح صورة الشهادة الثانوية لتجنب
+                                        التأخير."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-grid gap-2">
+                            <a href="print_coordination.html" class="btn btn-outline-primary">
+                                <i class="fas fa-print me-2"></i>طباعة استمارة التنسيق
+                            </a>
+                            <a href="payment.html" class="btn btn-success">
+                                <i class="fas fa-credit-card me-2"></i>سداد الرسوم
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+</body>
+
+</html>

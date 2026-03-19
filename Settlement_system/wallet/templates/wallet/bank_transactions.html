@@ -1,0 +1,148 @@
+{% extends 'wallet/bank_dashboard.html' %}
+{% load static %}
+
+{% block title %}إدارة العمليات | Transaction Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4 rounded shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand fw-bold">إدارة عمليات السحب والإيداع</span>
+        </div>
+    </nav>
+
+    <div class="alert alert-light border shadow-sm small mb-4">
+        <i class="fas fa-info-circle text-primary me-2"></i>
+        <strong>تعليمات:</strong> البنك الوسيط مسؤول عن "تنفيذ" القيود. قبول الإيداع أو تنفيذ السحب ينشئ قيدًا في دفتر
+        الأستاذ (Ledger) تلقائيًا.
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+        <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#deposits"><i
+                            class="fas fa-arrow-down me-2 text-success"></i> إدارة الإيداع</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#withdraws"><i
+                            class="fas fa-arrow-up me-2 text-danger"></i> إدارة السحب</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="tab-content">
+                <!-- 1. DEPOSIT MANAGEMENT -->
+                <div class="tab-pane fade show active" id="deposits">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light border-bottom">
+                                <tr>
+                                    <th>رقم العملية</th>
+                                    <th>المحفظة</th>
+                                    <th>المستخدم</th>
+                                    <th>المبلغ</th>
+                                    <th>العملة</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-monospace text-muted">DEP-9921</td>
+                                    <td>جوالي</td>
+                                    <td>أحمد محمد صالح</td>
+                                    <td class="fw-bold text-success">50,000</td>
+                                    <td>YER</td>
+                                    <td><span class="badge bg-warning text-dark">Pending</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success fw-bold me-1" title="قبول"><i
+                                                class="fas fa-check"></i> قبول</button>
+                                        <button class="btn btn-sm btn-outline-danger fw-bold me-1" title="رفض"><i
+                                                class="fas fa-times"></i> رفض</button>
+                                        <button class="btn btn-sm btn-link text-muted" title="عرض الـ Ledger"><i
+                                                class="fas fa-book"></i> Ledger</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-monospace text-muted">DEP-9922</td>
+                                    <td>جوالي</td>
+                                    <td>شركة النور تك</td>
+                                    <td class="fw-bold text-success">1,200,000</td>
+                                    <td>YER</td>
+                                    <td><span class="badge bg-success">Completed</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-secondary" disabled>تم القبول</button>
+                                        <button class="btn btn-sm btn-link text-primary"><i class="fas fa-book"></i> عرض
+                                            القيد</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. WITHDRAW MANAGEMENT -->
+                <div class="tab-pane fade" id="withdraws">
+                    <div class="p-3 bg-light border-bottom d-flex align-items-center gap-4">
+                        <div><small class="text-muted d-block">إجمالي طلبات السحب</small> <strong>5 طلبات</strong></div>
+                        <div><small class="text-muted d-block">السيولة المتاحة للتنفيذ</small> <strong
+                                class="text-primary">45,000,000 YR</strong></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light border-bottom">
+                                <tr>
+                                    <th>رقم العملية</th>
+                                    <th>المحفظة / المستخدم</th>
+                                    <th>المبلغ (عملة)</th>
+                                    <th>حالة الرصيد</th>
+                                    <th>تحذير AML</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-monospace text-muted">WDR-5510</td>
+                                    <td>
+                                        <span class="fw-bold d-block">سعيد العمري</span>
+                                        <small class="text-muted">جوالي</small>
+                                    </td>
+                                    <td class="fw-bold text-danger">20,000 YR</td>
+                                    <td><span class="badge bg-light text-dark border">متوفر (150K)</span></td>
+                                    <td><span class="badge bg-success-subtle text-success"><i
+                                                class="fas fa-check-circle"></i> Clean</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary fw-bold"><i
+                                                class="fas fa-paper-plane me-1"></i> تنفيذ السحب</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-monospace text-muted">WDR-5512</td>
+                                    <td>
+                                        <span class="fw-bold d-block">متجر هايبر</span>
+                                        <small class="text-muted">جوالي (Merchant)</small>
+                                    </td>
+                                    <td class="fw-bold text-danger">5,000,000 YR</td>
+                                    <td><span class="badge bg-light text-dark border">متوفر (8M)</span></td>
+                                    <td>
+                                        <div class="d-flex align-items-center text-warning fw-bold small">
+                                            <i class="fas fa-exclamation-triangle me-1"></i> High Value
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-warning text-dark me-1"><i
+                                                class="fas fa-pause"></i> تعليق</button>
+                                        <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i> رفض</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

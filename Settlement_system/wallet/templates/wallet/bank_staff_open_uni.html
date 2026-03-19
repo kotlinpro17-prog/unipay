@@ -1,0 +1,114 @@
+{% extends 'wallet/bank_dashboard.html' %}
+
+{% block content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="fw-bold mb-0 text-primary"><i class="fas fa-university me-2"></i> فتح حساب بنكي لجامعة (University
+            Account)</h5>
+    </div>
+    <div class="card-body">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong><i class="fas fa-exclamation-triangle me-2"></i> يرجى تصحيح الأخطاء التالية:</strong>
+            <ul class="mb-0 mt-2">
+                {% for field in form %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if step == 1 %}
+        <p class="text-muted">الخطوة 1: أدخل كود الجامعة المزود من قبل الممثل الرسمي للجامعة.</p>
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            <input type="hidden" name="step" value="1">
+            <div class="col-md-6">
+                <label class="form-label">رمز الجامعة (University Code)</label>
+                {{ form.university_code }}
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary px-4">تحقق ومتابعة <i
+                        class="fas fa-arrow-left ms-2"></i></button>
+            </div>
+        </form>
+
+        {% elif step == 2 %}
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle me-2"></i> تم التحقق من الجامعة: <strong>{{ university_name }}</strong>
+            <br>
+            <small class="text-muted"><i class="fas fa-info-circle me-1"></i> يرجى استكمال بيانات المحفظة أدناه.</small>
+        </div>
+
+        <p class="text-muted">الخطوة 2: قم بإعداد بيانات الدخول للحساب.</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="step" value="2">
+            <input type="hidden" name="university_id" value="{{ request.session.uni_id }}">
+
+            <h6 class="fw-bold mb-3">بيانات الحساب الجديد</h6>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">اسم المستخدم (للدخول)</label>
+                    {{ form.username }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">رقم الهاتف للتحصيل (Phone Number)</label>
+                    {{ form.phone_number }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">كلمة المرور</label>
+                    {{ form.password }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">تأكيد كلمة المرور</label>
+                    {{ form.confirm_password }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success px-4">إنشاء الحساب <i class="fas fa-check ms-2"></i></button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-dismiss alerts after 4 seconds
+    document.addEventListener('DOMContentLoaded', function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function (alert) {
+            setTimeout(function () {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 4000);
+        });
+    });
+</script>
+{% endblock %}

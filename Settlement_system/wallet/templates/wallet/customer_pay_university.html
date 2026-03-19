@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دفع رسوم الجامعة | محفظتي</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        #sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        #sidebar ul.components {
+            padding: 20px 0;
+        }
+
+        #sidebar ul li a {
+            padding: 15px 20px;
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        #sidebar ul li a:hover,
+        #sidebar ul li.active>a {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-right: 4px solid #3498db;
+        }
+
+        #content {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .card-custom {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h4>محفظتي</h4>
+                <small>نظام الدفع الإلكتروني</small>
+            </div>
+            <ul class="list-unstyled components">
+                <li><a href="{% url 'dashboard' %}"><i class="fas fa-home me-2"></i> الرئيسية</a></li>
+                <li><a href="{% url 'transfer' %}"><i class="fas fa-paper-plane me-2"></i> تحويل أموال</a></li>
+                <li class="active"><a href="{% url 'pay_university' %}"><i class="fas fa-graduation-cap me-2"></i> دفع
+                        رسوم الجامعة</a></li>
+                <li><a href="{% url 'customer_transactions' %}"><i class="fas fa-history me-2"></i> سجل العمليات</a>
+                </li>
+                <li class="mt-5">
+                    <form action="{% url 'logout' %}" method="post" class="px-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger w-100 btn-sm"><i
+                                class="fas fa-sign-out-alt me-2"></i> خروج</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+
+        <div id="content">
+            <nav class="navbar navbar-light bg-white rounded shadow-sm mb-4 px-3">
+                <span class="navbar-brand mb-0 h1">خدمة دفع الرسوم الجامعية</span>
+            </nav>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card card-custom p-4">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <div id="student_details_card" class="alert alert-info border-0 shadow-sm"
+                            style="display: none;">
+                            <div id="details_content"></div>
+                        </div>
+
+                        <form id="payment_form" method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">الرقم الأكاديمي أو رقم الجلوس</label>
+                                <div class="position-relative">
+                                    <input type="text" id="student_id_input" name="student_id"
+                                        class="form-control form-control-lg"
+                                        placeholder="أدخل رقمك الأكاديمي أو رقم الجلوس" required>
+                                    <div id="lookup_spinner" class="position-absolute top-50 end-0 translate-middle-y me-3 d-none">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                    </div>
+                                </div>
+                                <div id="verify_feedback" class="form-text"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">المبلغ المطلوب دفعه</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" name="amount" id="amount_input"
+                                        class="form-control" placeholder="0.00" required disabled>
+                                    <button class="btn btn-outline-secondary d-none" type="button"
+                                        id="pay_full_btn">الكل</button>
+                                    <span class="input-group-text">YER</span>
+                                </div>
+                                <div id="amount_feedback" class="form-text mt-1"></div>
+                            </div>
+
+                            <div class="mb-3" id="wallet_selection_container" style="display: none;">
+                                <label class="form-label fw-bold">اختر محفظة الجامعة للتحويل إليها</label>
+                                <select id="university_wallet_select" name="university_wallet_acc"
+                                    class="form-select form-select-lg">
+                                    <option value="">-- اختر المحفظة --</option>
+                                </select>
+                                <div class="form-text text-primary small">
+                                    <i class="fas fa-info-circle me-1"></i> الجامعة تدعم عدة محافظ، يرجى اختيار المحفظة
+                                    المناسبة.
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="university_id" id="university_id_hidden">
+
+                            <div class="alert alert-warning py-2 small mb-3">
+                                <i class="fas fa-info-circle me-1"></i> يرجى "التحقق" من بيانات الطالب قبل إتمام الدفع
+                                لضمان وصول المبلغ للمكان الصحيح.
+                            </div>
+
+                            <button type="submit" id="submit_payment" class="btn btn-primary w-100 py-2 fw-bold"
+                                disabled>إتمام عملية الدفع</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const studentIdInput = document.getElementById('student_id_input');
+            const lookupSpinner = document.getElementById('lookup_spinner');
+            const verifyFeedback = document.getElementById('verify_feedback');
+            const detailsCard = document.getElementById('student_details_card');
+            const detailsContent = document.getElementById('details_content');
+            const submitPayment = document.getElementById('submit_payment');
+            const universityIdHidden = document.getElementById('university_id_hidden');
+            const amountInput = document.getElementById('amount_input');
+            const payFullBtn = document.getElementById('pay_full_btn');
+            const amountFeedback = document.getElementById('amount_feedback');
+
+            let currentStudentBalance = 0;
+            let lookupTimeout = null;
+
+            studentIdInput.addEventListener('input', function () {
+                const studentId = this.value.trim();
+                
+                // Clear existing state
+                verifyFeedback.innerHTML = '';
+                detailsCard.style.display = 'none';
+                submitPayment.disabled = true;
+                amountInput.disabled = true;
+                amountInput.value = '';
+                amountFeedback.innerHTML = '';
+                lookupSpinner.classList.add('d-none');
+
+                clearTimeout(lookupTimeout);
+
+                if (studentId.length >= 3) {
+                    lookupTimeout = setTimeout(() => {
+                        fetchDetails(studentId);
+                    }, 800);
+                }
+            });
+
+            async function fetchDetails(id) {
+                // Show loading state
+                lookupSpinner.classList.remove('d-none');
+                detailsCard.style.display = 'block';
+                detailsContent.innerHTML = '<div class="text-center text-primary"><i class="fas fa-spinner fa-spin"></i> جاري جلب البيانات...</div>';
+                submitPayment.disabled = true;
+
+                try {
+                    const response = await fetch(`/api/wallet/student-details/${id}/`);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        let balanceText = '';
+                        let balanceClass = '';
+                        currentStudentBalance = data.balance; // Store globally for validation
+
+                        // Reset amount UI
+                        amountInput.disabled = false;
+                        amountInput.value = '';
+                        amountFeedback.innerHTML = '';
+
+                        if (data.balance > 0) {
+                            balanceText = `عليه مستحقات: ${data.balance.toLocaleString()} ريال`;
+                            balanceClass = 'text-danger';
+                            payFullBtn.classList.remove('d-none');
+                        } else if (data.balance <= 0) {
+                            if (data.balance < 0) {
+                                balanceText = `له رصيد زائد: ${Math.abs(data.balance).toLocaleString()} ريال`;
+                            } else {
+                                balanceText = 'خالص الذمة المالية';
+                            }
+                            balanceClass = 'text-success';
+                            payFullBtn.classList.add('d-none');
+                        }
+
+                        // Set university ID dynamically from API
+                        universityIdHidden.value = data.university_db_id;
+
+                        // NEW: Handle available wallets
+                        const walletSelect = document.getElementById('university_wallet_select');
+                        const walletContainer = document.getElementById('wallet_selection_container');
+
+                        walletSelect.innerHTML = '<option value="">-- اختر المحفظة --</option>';
+                        if (data.available_wallets && data.available_wallets.length > 0) {
+                            data.available_wallets.forEach(w => {
+                                const opt = document.createElement('option');
+                                opt.value = w.account_number;
+                                opt.textContent = `${w.provider_name} (حساب: ${w.account_number})`;
+                                walletSelect.appendChild(opt);
+                            });
+                            walletContainer.style.display = 'block';
+                            walletSelect.required = true;
+                        } else {
+                            walletContainer.style.display = 'none';
+                            walletSelect.required = false;
+                        }
+
+                        detailsContent.innerHTML = `
+                            <div class="row align-items-center">
+                                <div class="col-md-7">
+                                    <small class="text-muted d-block">اسم الطالب</small>
+                                    <span class="fw-bold fs-5">${data.full_name}</span>
+                                    <div class="mt-2 small">
+                                        <div class="mb-1">
+                                            <i class="fas fa-university me-1 text-primary"></i> 
+                                            <span class="fw-bold">${data.university}</span>
+                                        </div>
+                                        <div class="mb-1">
+                                            <i class="fas fa-phone-alt me-1 text-success"></i> 
+                                            <span>${data.university_phone || 'لا يوجد رقم هاتف مسجل'}</span>
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="badge bg-light text-dark border">${data.major}</span>
+                                            <span class="badge bg-info text-dark border ms-1">${data.status}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 text-md-start border-start mt-3 mt-md-0">
+                                    <small class="text-muted d-block">الحالة المالية لدى الجامعة</small>
+                                    <span class="fw-bold d-block ${balanceClass}">${balanceText}</span>
+                                    <span class="badge bg-success-subtle text-success border border-success mt-2">
+                                        <i class="fas fa-verified me-1"></i> هوية الجامعة موثقة
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+
+                        verifyFeedback.innerHTML = '<span class="text-success"><i class="fas fa-check-circle"></i> تم التحقق بنجاح</span>';
+                        submitPayment.disabled = false;
+                    } else {
+                        const errorData = await response.json().catch(() => ({ error: 'Response not JSON' }));
+                        detailsContent.innerHTML = `<div class="text-danger"><i class="fas fa-exclamation-circle"></i> ${errorData.error || 'لم يتم العثور على الطالب'}</div>`;
+                        verifyFeedback.innerHTML = '<span class="text-danger">فشل التحقق</span>';
+                    }
+                } catch (error) {
+                    console.error("Fetch Error:", error);
+                    detailsContent.innerHTML = `<div class="text-danger">حدث خطأ في الاتصال بالنظام الجامعي: ${error.message}</div>`;
+                } finally {
+                    lookupSpinner.classList.add('d-none');
+                }
+            }
+
+            // Quick pay full amount button
+            payFullBtn.addEventListener('click', function () {
+                if (currentStudentBalance > 0) {
+                    amountInput.value = currentStudentBalance;
+                    validateAmount();
+                }
+            });
+
+            // Smart UX Validation
+            amountInput.addEventListener('input', validateAmount);
+
+            function validateAmount() {
+                const val = parseFloat(amountInput.value);
+                if (isNaN(val) || val <= 0) {
+                    amountFeedback.innerHTML = '';
+                    return;
+                }
+
+                if (currentStudentBalance <= 0) {
+                    amountFeedback.innerHTML = '<span class="text-primary"><i class="fas fa-info-circle"></i> الطالب لا توجد عليه رسوم حالياً. هذا المبلغ سيُحفظ كرصيد دائن للمستقبل.</span>';
+                } else if (val < currentStudentBalance) {
+                    amountFeedback.innerHTML = '<span class="text-secondary"><i class="fas fa-adjust"></i> أنت تقوم بسداد دفعة جزئية (قسط) من الرسوم.</span>';
+                } else if (val === currentStudentBalance) {
+                    amountFeedback.innerHTML = '<span class="text-success"><i class="fas fa-check-circle"></i> أنت تقوم بسداد كامل الرسوم المتبقية.</span>';
+                } else if (val > currentStudentBalance) {
+                    const excess = (val - currentStudentBalance).toLocaleString();
+                    amountFeedback.innerHTML = `<span class="text-primary"><i class="fas fa-info-circle"></i> المبلغ أكبر من المطلوب. سيتم حفظ الفائض (${excess} ريال) كرصيد دائن للمستقبل.</span>`;
+                }
+            }
+        });
+    </script>
+    {% include 'includes/tab_session_js.html' %}
+</body>
+
+</html>

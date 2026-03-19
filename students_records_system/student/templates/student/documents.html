@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}رفع الوثائق - بوابة القبول الموحد{% endblock %}
+
+{% block navbar %}
+{% include 'student/includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'student/includes/sidebar.html' %}
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5 pt-4">
+<div class="" >
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-success"><i class="fas fa-file-upload me-2"></i>رفع الوثائق</h2>
+        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-right me-2"></i>العودة للوحة التحكم
+        </a>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Upload Form Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-cloud-upload-alt me-2"></i>رفع وثيقة جديدة</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="document_type" class="form-label fw-bold">نوع الوثيقة <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="document_type" name="document_type" required>
+                                <option value="">اختر نوع الوثيقة</option>
+                                {% for value, label in document_types %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="file" class="form-label fw-bold">الملف <span
+                                    class="text-danger">*</span></label>
+                            <input type="file" class="form-control" id="file" name="file" required
+                                accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted">الصيغ المدعومة: PDF, JPG, PNG (حجم أقصى: 5MB)</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label fw-bold">ملاحظات</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"
+                                placeholder="أضف أي ملاحظات إضافية..."></textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-upload me-2"></i>رفع الوثيقة
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="card shadow-sm border-0 border-warning border-start border-4">
+                <div class="card-body">
+                    <h6 class="fw-bold text-warning mb-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>ملاحظات هامة
+                    </h6>
+                    <ul class="small text-muted">
+                        <li class="mb-2">يجب أن تكون الوثائق واضحة وقابلة للقراءة</li>
+                        <li class="mb-2">الصور يجب أن تكون بجودة عالية</li>
+                        <li class="mb-2">تأكد من رفع جميع الوثائق المطلوبة</li>
+                        <li class="mb-2">يمكنك حذف وإعادة رفع الوثائق</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- Documents List Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-folder-open me-2"></i>الوثائق المرفوعة</h5>
+                </div>
+                <div class="card-body">
+                    {% if documents %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>نوع الوثيقة</th>
+                                    <th>تاريخ الرفع</th>
+                                    <th>ملاحظات</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for doc in documents %}
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-file-alt text-primary me-2"></i>
+                                        <strong>{{ doc.get_document_type_display }}</strong>
+                                    </td>
+                                    <td>{{ doc.uploaded_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        {% if doc.notes %}
+                                        {{ doc.notes|truncatewords:10 }}
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ doc.file.url }}" class="btn btn-sm btn-outline-primary"
+                                            target="_blank">
+                                            <i class="fas fa-eye"></i> عرض
+                                        </a>
+                                        <a href="{{ doc.file.url }}" class="btn btn-sm btn-outline-success" download>
+                                            <i class="fas fa-download"></i> تحميل
+                                        </a>
+                                        <a href="{% url 'delete_document' doc.id %}"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('هل أنت متأكد من حذف هذه الوثيقة؟')">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center p-5">
+                        <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">لا توجد وثائق مرفوعة</h5>
+                        <p class="text-muted">ابدأ برفع وثائقك الآن</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Required Documents Info -->
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="fas fa-list-check me-2"></i>الوثائق المطلوبة</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>البطاقة الشخصية
+                                    (وجه وظهر)</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>شهادة الثانوية
+                                    العامة</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>صورة شخصية حديثة
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>شهادة الميلاد</li>
+                                <li class="mb-2"><i class="fas fa-info-circle text-info me-2"></i>أي وثائق إضافية مطلوبة
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </main>
+    </div>
+</div>
+{% endblock %}

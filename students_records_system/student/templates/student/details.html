@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الطلب - بوابة القبول الموحد</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand fw-bold">بوابة القبول الموحد</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> أحمد محمد
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html">الملف الشخصي</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="../index.html">تسجيل الخروج</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-white p-3">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">
+                                <i class="fas fa-home me-2"></i> الرئيسية
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                                <i class="fas fa-user me-2"></i> الملف الشخصي
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="apply.html">
+                                <i class="fas fa-university me-2"></i> التقديم للجامعات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="status.html">
+                                <i class="fas fa-clipboard-list me-2"></i> حالة الطلبات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="notifications.html">
+                                <i class="fas fa-bell me-2"></i> الإشعارات
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content bg-light">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom sticky-top bg-light mx-n4 px-4" style="z-index: 1010; top: 60px; box-shadow: 0 10px 10px -10px rgba(0,0,0,0.05);">
+                    <h1 class="h2 fw-bold text-primary">تفاصيل الطلب #12345</h1>
+                    <a href="status.html" class="btn btn-outline-secondary btn-sm"><i
+                            class="fas fa-arrow-right me-1"></i> عودة للقائمة</a>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <!-- Application Info -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-bold"><i class="fas fa-info-circle me-2"></i>معلومات الطلب</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-1">الجامعة</p>
+                                        <h6 class="fw-bold">جامعة عدن</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-1">الكلية</p>
+                                        <h6 class="fw-bold">كلية الطب والعلوم الصحية</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-1">التخصص</p>
+                                        <h6 class="fw-bold">طب بشري</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-1">تاريخ التقديم</p>
+                                        <h6 class="fw-bold">2023-09-25</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-1">حالة الطلب</p>
+                                        <span class="badge badge-status status-accepted">مقبول</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-1">حالة الدفع</p>
+                                        <span class="badge bg-danger">غير مدفوع</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documents -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-bold"><i class="fas fa-file-alt me-2"></i>المستندات المرفقة</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-file-pdf text-danger me-2"></i> شهادة الثانوية العامة
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">عرض</a>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-file-image text-primary me-2"></i> صورة الهوية الشخصية
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">عرض</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <!-- Actions -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="fw-bold mb-3">الإجراءات المطلوبة</h5>
+                                <div class="alert alert-success small">
+                                    <i class="fas fa-check-circle me-1"></i> تهانينا! تم قبول طلبك مبدئياً. يرجى سداد
+                                    رسوم التسجيل لإكمال الإجراءات.
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <a href="payment.html" class="btn btn-success fw-bold py-2">
+                                        <i class="fas fa-credit-card me-2"></i>دفع الرسوم (50,000 ر.ي)
+                                    </a>
+                                    <button class="btn btn-outline-danger btn-sm">إلغاء الطلب</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-bold">سجل النشاط</h5>
+                            </div>
+                            <div class="card-body">
+                                <div
+                                    class="timeline-item pb-3 border-start border-2 ps-3 border-primary position-relative">
+                                    <div class="position-absolute top-0 start-0 translate-middle bg-primary rounded-circle"
+                                        style="width: 10px; height: 10px;"></div>
+                                    <p class="small text-muted mb-1">2023-09-28</p>
+                                    <h6 class="mb-0">تم قبول الطلب</h6>
+                                </div>
+                                <div
+                                    class="timeline-item pb-3 border-start border-2 ps-3 border-primary position-relative">
+                                    <div class="position-absolute top-0 start-0 translate-middle bg-primary rounded-circle"
+                                        style="width: 10px; height: 10px;"></div>
+                                    <p class="small text-muted mb-1">2023-09-26</p>
+                                    <h6 class="mb-0">تمت مراجعة المستندات</h6>
+                                </div>
+                                <div class="timeline-item border-start border-2 ps-3 border-primary position-relative">
+                                    <div class="position-absolute top-0 start-0 translate-middle bg-primary rounded-circle"
+                                        style="width: 10px; height: 10px;"></div>
+                                    <p class="small text-muted mb-1">2023-09-25</p>
+                                    <h6 class="mb-0">تم تقديم الطلب</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+</body>
+
+</html>

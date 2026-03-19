@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تخصصات {{ university.name }} - بوابة القبول الموحد{% endblock %}
+
+{% block navbar %}
+{% include 'student/includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 80px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'student_dashboard' %}" class="text-success">الرئيسية</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'university_list' %}" class="text-success">الجامعات</a></li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'college_list' university.id %}" class="text-success">
+                    {{ university.name }}
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ college.name }}</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4 fw-bold text-success"><i class="fas fa-book-open me-2"></i>تخصصات {{ college.name }}</h2>
+
+    <div class="row g-4">
+        {% for major in majors %}
+        <div class="col-md-6 col-lg-4">
+            <div
+                class="card h-100 shadow-sm border-0 hover-card {% if student_profile.high_school_score %}{% if major.is_compatible %}border-start border-success border-4{% else %}border-start border-danger border-4{% endif %}{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title fw-bold mb-0">{{ major.name }}</h5>
+                        {% if student_profile.high_school_score %}
+                        {% if major.is_compatible %}
+                        <span class="badge bg-success small"><i class="fas fa-check-circle"></i> متوافق</span>
+                        {% else %}
+                        <span class="badge bg-danger small"><i class="fas fa-times-circle"></i> غير متوافق</span>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    <p class="card-text text-muted small">{{ major.description|truncatewords:10 }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-light text-dark border small">
+                            <i class="fas fa-users me-1 text-primary"></i> المقاعد: {{ major.capacity }}
+                        </span>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success small">
+                            <i class="fas fa-tag me-1"></i> {{ major.price_per_hour }} {{ currency_symbol }} / ساعة
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="small">
+                            <span class="text-muted"><i class="fas fa-star text-warning me-1"></i> معدل القبول:</span>
+                            <span class="fw-bold">{{ major.min_gpa|floatformat:2 }}%</span>
+                        </div>
+                        {% if student_profile.high_school_score %}
+                        <div class="small">
+                            <span class="text-muted">معدلك:</span>
+                            <span
+                                class="fw-bold {% if major.is_compatible %}text-success{% else %}text-danger{% endif %}">
+                                {{ student_profile.high_school_score|floatformat:2 }}%
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <a href="{% url 'major_study_plan' major.id %}"
+                            class="btn btn-outline-primary btn-sm w-100 fw-bold">
+                            <i class="fas fa-list-ol me-1"></i> عرض الخطة الدراسية
+                        </a>
+                    </div>
+
+                    {% if not is_coordination_open %}
+                    <button class="btn btn-secondary w-100 fw-bold" disabled
+                        title="عذراً، فترة التنسيق والقبول مغلقة حالياً.">
+                        <i class="fas fa-lock me-1"></i> التنسيق مغلق
+                    </button>
+                    {% elif student_profile.high_school_score %}
+                    {% if major.is_compatible %}
+                    <a href="{% url 'apply_major' major.id %}" class="btn btn-success w-100 fw-bold">
+                        تقديم طلب <i class="fas fa-paper-plane ms-1"></i>
+                    </a>
+                    {% else %}
+                    <button class="btn btn-secondary w-100 fw-bold" disabled
+                        title="عذراً، معدلك أقل من الحد الأدنى لهذا التخصص">
+                        <i class="fas fa-exclamation-triangle me-1"></i> المعدل غير كافٍ
+                    </button>
+                    {% endif %}
+                    {% else %}
+                    <a href="{% url 'high_school_profile' %}" class="btn btn-warning w-100 fw-bold">
+                        أكمل بيانات المعدل للتقديم <i class="fas fa-edit ms-1"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">لا توجد تخصصات متاحة في هذه الكلية حالياً.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

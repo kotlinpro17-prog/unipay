@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تسجيل جامعة جديدة - بوابة القبول الموحد{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-light" style="padding-top: 80px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate-up">
+                    <div class="card-header bg-success text-white text-center p-4">
+                        <h4 class="mb-0 fw-bold"><i class="fas fa-university me-2"></i>تسجيل جامعة جديدة</h4>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% if form.errors %}
+                            <div class="alert alert-danger">
+                                يرجى تصحيح الأخطاء أدناه.
+                            </div>
+                            {% endif %}
+
+                            {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                    <span class="text-danger">*</span>
+                                    {% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                <div class="form-text text-muted">{{ field.help_text }}</div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in field.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="terms" required>
+                                <label class="form-check-label small" for="terms">
+                                    أوافق على <a href="#" class="text-success">الشروط والأحكام</a>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 py-2 mb-3 fw-bold">تسجيل</button>
+                            <div class="text-center">
+                                <span class="text-muted">لديك حساب بالفعل؟</span>
+                                <a href="{% url 'university_login' %}"
+                                    class="text-success fw-bold text-decoration-none">تسجيل الدخول</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الخطة الدراسية: {{ major.name }} - بوابة القبول الموحد{% endblock %}
+
+{% block navbar %}
+{% include 'student/includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 80px; margin-bottom: 40px;">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'student_dashboard' %}" class="text-success">الرئيسية</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'university_list' %}" class="text-success">الجامعات</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'college_list' university.id %}" class="text-success">{{ university.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'major_list' college.id %}" class="text-success">{{ college.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">الخطة الدراسية: {{ major.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-success mb-1">
+                <i class="fas fa-list-ol me-2"></i>الخطة الدراسية لتخصص {{ major.name }}
+            </h2>
+            <p class="text-muted mb-0">
+                <i class="fas fa-university me-1"></i> {{ university.name }} | 
+                <i class="fas fa-graduation-cap me-1"></i> مدة الدراسة: {{ major.duration }} سنوات
+            </p>
+        </div>
+        <a href="{% url 'major_list' college.id %}" class="btn btn-outline-success">
+            <i class="fas fa-arrow-right me-1"></i> العودة لقائمة التخصصات
+        </a>
+    </div>
+
+    {% if study_plan %}
+        {% for year_data in study_plan %}
+            <div class="card shadow-sm border-0 mb-5 overflow-hidden">
+                <div class="card-header bg-success text-white py-3">
+                    <h4 class="card-title mb-0 fw-bold">
+                        <i class="fas fa-calendar-alt me-2"></i> السنة {{ year_data.year }}
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        {% for semester_data in year_data.semesters %}
+                            <div class="col-lg-6 {% if not forloop.last and year_data.semesters|length > 1 %}border-end{% endif %}">
+                                <div class="p-4 h-100">
+                                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                        {{ semester_data.name }}
+                                        <span class="badge bg-light text-success border border-success ms-2 small">
+                                            {{ semester_data.courses|length }} مواد
+                                        </span>
+                                    </h5>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th class="small py-2">الرمز</th>
+                                                    <th class="small py-2">المادة</th>
+                                                    <th class="small py-2 text-center">ساعات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for course in semester_data.courses %}
+                                                    <tr>
+                                                        <td class="small fw-bold text-primary">{{ course.code }}</td>
+                                                        <td>
+                                                            <div class="small fw-bold">{{ course.name }}</div>
+                                                            {% if course.prerequisite %}
+                                                                <div class="text-muted extra-small" style="font-size: 0.75rem;">
+                                                                    متطلب: {{ course.prerequisite.code }}
+                                                                </div>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="text-center small">{{ course.credit_hours }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning py-5 text-center shadow-sm">
+            <div class="display-1 mb-3 text-warning"><i class="fas fa-info-circle"></i></div>
+            <h4>عذراً، الخطة الدراسية لهذا التخصص غير متوفرة حالياً</h4>
+            <p class="mb-0 text-muted">يرجى مراجعة إدارة الجامعة للمزيد من المعلومات.</p>
+        </div>
+    {% endif %}
+
+    <div class="card bg-info bg-opacity-10 border-info border-opacity-25 mt-4">
+        <div class="card-body py-3">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle text-info fs-4 me-3"></i>
+                <div>
+                    <h6 class="fw-bold text-info mb-1">ملاحظة للطالب</h6>
+                    <p class="text-muted small mb-0">هذه الخطة استرشادية وقد تخضع للتعديل من قبل الجامعة. يرجى دائماً التأكد من التسجيل في المواد الصحيحة وفقاً لتوجيهات المرشد الأكاديمي.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .extra-small {
+        font-size: 0.7rem;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        transition: transform 0.3s ease;
+    }
+    .table th {
+        font-weight: 600;
+        color: #6c757d;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    .table td {
+        border-bottom: 1px solid #f8f9fa;
+    }
+</style>
+{% endblock %}

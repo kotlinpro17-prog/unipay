@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة النظام المالي الموحد</title>
+
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .portal-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            background: #fff;
+            border-color: var(--accent-color);
+        }
+
+        .portal-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .portal-card:hover .portal-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .central-icon {
+            background: rgba(13, 27, 42, 0.1);
+            color: var(--primary-color);
+        }
+
+        .bank-icon {
+            background: rgba(0, 180, 216, 0.1);
+            color: var(--accent-color);
+        }
+
+        .hero-title {
+            background: -webkit-linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .relative-z-2 {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container flex-column">
+        <!-- Abstract Background Shapes -->
+        <div
+            style="position: absolute; top: -150px; right: -150px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;">
+        </div>
+        <div
+            style="position: absolute; bottom: -100px; left: -100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0, 180, 216, 0.15) 0%, rgba(0,0,0,0) 70%); border-radius: 50%;">
+        </div>
+
+        <div class="container relative-z-2">
+            <div class="text-center mb-5 animate-fade-in">
+                <i class="fas fa-network-wired fa-3x text-white mb-3" style="opacity: 0.8;"></i>
+                <h1 class="display-4 fw-bold text-white mb-2">النظام المالي الموحد</h1>
+                <p class="lead text-white-50">بوابة الربط بين البنك المركزي والبنوك الوسيطة</p>
+            </div>
+
+            <div class="row justify-content-center g-4">
+                <!-- Central Bank Portal -->
+                <div class="col-md-5 col-lg-4 animate-fade-in" style="animation-delay: 0.1s;">
+                    <a href="{% url 'central_login' %}" class="text-decoration-none">
+                        <div class="card h-100 p-4 portal-card text-center">
+                            <div class="card-body">
+                                <div class="portal-icon central-icon mx-auto">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <h3 class="fw-bold mb-3 text-dark">البنك المركزي</h3>
+                                <p class="text-muted mb-4">بوابة التحكم السيادي، إدارة التراخيص، والمقاصة بين البنوك.
+                                </p>
+                                <span class="btn btn-outline-dark rounded-pill px-4">دخول المسؤولين <i
+                                        class="fas fa-arrow-left ms-2"></i></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Intermediate Bank Portal -->
+                <div class="col-md-5 col-lg-4 animate-fade-in" style="animation-delay: 0.2s;">
+                    <a href="{% url 'login' %}" class="text-decoration-none">
+                        <div class="card h-100 p-4 portal-card text-center">
+                            <div class="card-body">
+                                <div class="portal-icon bank-icon mx-auto">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <h3 class="fw-bold mb-3 text-dark">البنك الوسيط</h3>
+                                <p class="text-muted mb-4">إدارة المحافظ الإلكترونية، تنفيذ العمليات، والامتثال البنكي.
+                                </p>
+                                <span class="btn btn-outline-info rounded-pill px-4">دخول الموظفين <i
+                                        class="fas fa-arrow-left ms-2"></i></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Customer Portal -->
+                <div class="col-md-5 col-lg-4 animate-fade-in" style="animation-delay: 0.3s;">
+                    <a href="{% url 'customer_login' %}" class="text-decoration-none">
+                        <div class="card h-100 p-4 portal-card text-center">
+                            <div class="card-body">
+                                <div class="portal-icon customer-icon mx-auto"
+                                    style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <h3 class="fw-bold mb-3 text-dark">محفظتي (للأفراد)</h3>
+                                <p class="text-muted mb-4">دخول العملاء والطلاب لإدارة محافظهم المالية وعمليات التحويل.
+                                </p>
+                                <span class="btn btn-outline-success rounded-pill px-4">دخول المستخدمين <i
+                                        class="fas fa-arrow-left ms-2"></i></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <p class="text-white-50 small">جميع الحقوق محفوظة © 2026 - نظام الرقابة المالية</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'includes/tab_session_js.html' %}
+</body>
+
+</html>

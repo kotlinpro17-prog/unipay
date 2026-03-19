@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطاب القبول - {{ application.student.user.username }}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', Arial, sans-serif;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .acceptance-letter {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+
+        @media screen {
+            body {
+                background: #f0f0f0;
+                padding: 20px;
+                min-height: 100vh;
+            }
+
+            .acceptance-letter {
+                max-width: 210mm;
+                min-height: 297mm;
+                margin: 0 auto;
+                background: white;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .acceptance-letter {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative curves - top right */
+        .curve-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .curve-top::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background: #2c5aa0;
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+
+        .curve-top::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 52%;
+            width: 750px;
+            height: 750px;
+            background: #1e3a5f;
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Decorative curves - bottom */
+        .curve-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+        }
+
+        .curve-bottom::before {
+            content: '';
+            position: absolute;
+            bottom: -400px;
+            left: 50%;
+            width: 1000px;
+            height: 1000px;
+            background: #2c5aa0;
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+
+        .curve-bottom::after {
+            content: '';
+            position: absolute;
+            bottom: -420px;
+            left: 48%;
+            width: 950px;
+            height: 950px;
+            background: #1e3a5f;
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Side decorative bars */
+        .side-bars {
+            position: absolute;
+            top: 40px;
+            left: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .bar {
+            width: 150px;
+            height: 3px;
+            background: #2c5aa0;
+        }
+
+        .bar:nth-child(2) {
+            width: 130px;
+            background: #1e3a5f;
+        }
+
+        .bar:nth-child(3) {
+            width: 110px;
+            background: #2c5aa0;
+        }
+
+        /* Content container */
+        .content-wrapper {
+            position: relative;
+            z-index: 5;
+            padding: 50px 60px;
+        }
+
+        /* Logo and header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a5f 100%);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+
+        .university-name {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e3a5f;
+            margin-bottom: 5px;
+        }
+
+        .college-name {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Document title */
+        .document-title {
+            text-align: center;
+            margin: 40px 0 30px;
+        }
+
+        .document-title h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e3a5f;
+            margin-bottom: 5px;
+        }
+
+        .document-subtitle {
+            font-size: 13px;
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Content */
+        .content {
+            line-height: 1.8;
+            font-size: 14px;
+            color: #333;
+            text-align: justify;
+        }
+
+        .content p {
+            margin-bottom: 12px;
+        }
+
+        .bismillah {
+            text-align: center;
+            font-size: 16px;
+            color: #1e3a5f;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* Student name highlight */
+        .student-name {
+            display: inline-block;
+            color: #2c5aa0;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* Details table */
+        .details-section {
+            margin: 25px 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2c5aa0;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .details-table tr {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .details-table td {
+            padding: 10px 15px;
+        }
+
+        .details-table .label {
+            font-weight: 600;
+            color: #666;
+            width: 35%;
+        }
+
+        .details-table .value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Notes box */
+        .notes-box {
+            background: #f8f9fa;
+            border-right: 4px solid #2c5aa0;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .notes-box h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 12px;
+        }
+
+        .notes-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .notes-box li {
+            padding: 6px 0;
+            padding-right: 20px;
+            position: relative;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .notes-box li::before {
+            content: '▸';
+            position: absolute;
+            right: 0;
+            color: #2c5aa0;
+            font-weight: 700;
+        }
+
+        /* Closing message */
+        .closing {
+            text-align: center;
+            margin: 25px 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e3a5f;
+        }
+
+        /* Signatures */
+        .signatures {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 0 20px;
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 2px solid #333;
+            width: 150px;
+            margin: 50px auto 10px;
+        }
+
+        .signature-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer p {
+            font-size: 12px;
+            color: #666;
+            margin: 3px 0;
+        }
+
+        /* Print buttons */
+        .print-buttons {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a5f 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2c5aa0;
+            border: 2px solid #2c5aa0;
+        }
+
+        .btn-secondary:hover {
+            background: #2c5aa0;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="acceptance-letter">
+        <!-- Decorative curves -->
+        <div class="curve-top"></div>
+        <div class="curve-bottom"></div>
+
+        <!-- Side decorative bars -->
+        <div class="side-bars">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+
+        <!-- Main content -->
+        <div class="content-wrapper">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">🎓</div>
+                <h2 class="university-name">{{ application.major.university.name }}</h2>
+                <p class="college-name">{{ application.major.college.name|default:"" }}</p>
+            </div>
+
+            <!-- Document title -->
+            <div class="document-title">
+                <h1>خطاب قبول</h1>
+                <p class="document-subtitle">Acceptance Letter</p>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <p class="bismillah">بسم الله الرحمن الرحيم</p>
+
+                <p>السيد/ة: <span class="student-name">{{ application.student.user.username }}</span></p>
+
+                <p>تحية طيبة وبعد،</p>
+
+                <p>يسرنا ويسعدنا أن نبلغكم بأنه تم قبولكم للدراسة في جامعتنا الموقرة للعام الدراسي الحالي، ونهنئكم على
+                    هذا الإنجاز المتميز.</p>
+
+                <!-- Details Section -->
+                <div class="details-section">
+                    <h2 class="section-title">تفاصيل القبول</h2>
+
+                    <table class="details-table">
+                        <tr>
+                            <td class="label">الجامعة</td>
+                            <td class="value">{{ application.major.university.name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">الكلية</td>
+                            <td class="value">{{ application.major.college.name|default:"غير محدد" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">التخصص</td>
+                            <td class="value">{{ application.major.name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">رقم الطلب</td>
+                            <td class="value">#{{ application.id }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">تاريخ القبول</td>
+                            <td class="value">{{ application.updated_at|date:"Y-m-d" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">الرقم الوطني</td>
+                            <td class="value">{{ application.student.national_id }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">سعر الساعة المعتمدة</td>
+                            <td class="value">{{ application.major.price_per_hour }} ريال يمني</td>
+                        </tr>
+                        <tr>
+                            <td class="label">الحد الأدنى للمعدل</td>
+                            <td class="value">{{ application.major.min_gpa }}%</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Notes -->
+                <div class="notes-box">
+                    <h3>ملاحظات هامة:</h3>
+                    <ul>
+                        <li>يجب عليكم المبادرة بإكمال إجراءات التسجيل خلال المدة المحددة</li>
+                        <li>يجب إحضار جميع الوثائق الأصلية والمصدقة عند التسجيل</li>
+                        <li>الالتزام بدفع الرسوم الدراسية في المواعيد المحددة</li>
+                        <li>الالتزام بالأنظمة والتعليمات الجامعية المعمول بها</li>
+                    </ul>
+                </div>
+
+                <p class="closing">نتمنى لكم التوفيق والنجاح في مسيرتكم الدراسية</p>
+
+                <!-- Signatures -->
+                <div class="signatures">
+                    <div class="signature-box">
+                        <div class="signature-line"></div>
+                        <p class="signature-title">عميد القبول والتسجيل</p>
+                    </div>
+                    <div class="signature-box">
+                        <div class="signature-line"></div>
+                        <p class="signature-title">ختم الجامعة</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p><strong>{{ application.major.university.name }}</strong></p>
+                <p>تاريخ الإصدار: {% now "Y-m-d" %}</p>
+                <p>هذا المستند صادر إلكترونياً من بوابة القبول الموحد</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Buttons -->
+    <div class="print-buttons no-print">
+        <button onclick="window.print()" class="btn btn-primary">
+            🖨️ طباعة الخطاب
+        </button>
+        <a href="{% url 'application_detail' application.id %}" class="btn btn-secondary">
+            ← العودة
+        </a>
+    </div>
+</body>
+
+</html>

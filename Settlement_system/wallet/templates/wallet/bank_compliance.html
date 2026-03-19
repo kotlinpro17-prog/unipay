@@ -1,0 +1,105 @@
+{% extends 'wallet/bank_dashboard.html' %}
+{% load static %}
+
+{% block title %}الامتثال والمخاطر | Compliance & KYC{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4 rounded shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand fw-bold">نظام مراقبة الامتثال (AML/KYC Monitor)</span>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-danger px-3 py-2"><i class="fas fa-shield-alt me-1"></i> Active Monitoring</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Compliance Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 bg-white">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted mb-2">تنبيهات مشبوهة (High)</h6>
+                        <h3 class="fw-bold text-danger mb-0">12</h3>
+                    </div>
+                    <div class="text-danger opacity-50"><i class="fas fa-exclamation-circle fa-2x"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 bg-white">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted mb-2">طلبات KYC المعلقة</h6>
+                        <h3 class="fw-bold text-warning mb-0">85</h3>
+                    </div>
+                    <div class="text-warning opacity-50"><i class="fas fa-id-card fa-2x"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 bg-white">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="text-muted mb-2">المسح الدوري (Sanctions)</h6>
+                        <h3 class="fw-bold text-success mb-0">99.8%</h3>
+                    </div>
+                    <div class="text-success opacity-50"><i class="fas fa-search-dollar fa-2x"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts Table -->
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0"><i class="fas fa-flag me-2 text-danger"></i> تنبيهات غسيل الأموال المحتملة</h5>
+            <button class="btn btn-sm btn-outline-danger">تحديث القوائم السوداء</button>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>رقم التنبيه</th>
+                            <th>المحفظة المتأثرة</th>
+                            <th>نوع النشاط</th>
+                            <th>مستوى الخطر</th>
+                            <th>قيمة العملية</th>
+                            <th>تاريخ الكشف</th>
+                            <th>الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-monospace">AL-902</td>
+                            <td>جوالي (WLT-332)</td>
+                            <td>تكرار حوالات سريعة</td>
+                            <td><span class="badge bg-danger">Critical</span></td>
+                            <td class="fw-bold">1,500,000 YR</td>
+                            <td>منذ 15 دقيقة</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger px-3">تجميد مؤقت</button>
+                                <button class="btn btn-sm btn-link text-muted">تفاصيل</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="font-monospace">AL-901</td>
+                            <td>التاجر (M-391)</td>
+                            <td>تجاوز الحد اليومي</td>
+                            <td><span class="badge bg-warning text-dark">Medium</span></td>
+                            <td class="fw-bold">5,000,000 YR</td>
+                            <td>منذ ساعتين</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning text-dark px-3">طلب تبرير</button>
+                                <button class="btn btn-sm btn-link text-muted">تفاصيل</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

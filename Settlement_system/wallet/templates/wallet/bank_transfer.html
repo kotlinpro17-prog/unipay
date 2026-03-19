@@ -1,0 +1,136 @@
+{% extends 'wallet/bank_dashboard.html' %}
+{% load static %}
+
+{% block title %}التحويل بين المحافظ | Cross-Wallet Transfer{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4 rounded shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand fw-bold">التحويل بين المحافظ (Cross-Wallet Transfer)</span>
+        </div>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white py-3 text-center">
+                    <h5 class="fw-bold mb-0"><i class="fas fa-exchange-alt me-2"></i> معاملة تحويل جديدة</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if error %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted">المحفظة المرسلة (Source)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fas fa-wallet"></i></span>
+                                <input type="text" name="sender_wallet" class="form-control"
+                                    placeholder="أدخل رقم محفظة المرسل أو رقم الهاتف" required
+                                    value="{{ form_data.sender_wallet }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted">المحفظة المستقبلة أو رقم الهاتف
+                                (Beneficiary)</label>
+                            <label class="small text-danger float-end fw-bold">* Account No. or Phone</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fas fa-user"></i></span>
+                                <input type="text" name="receiver_account" class="form-control"
+                                    placeholder="أدخل رقم محفظة المستفيد أو رقم الهاتف" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-8">
+                                <label class="form-label fw-bold small text-muted">المبلغ (Amount)</label>
+                                <div class="input-group">
+                                    <input type="number" name="amount" class="form-control fw-bold fs-5"
+                                        placeholder="0.00" step="0.01" required>
+                                </div>
+                                <div class="form-text">الحد اليومي المتاح: 500,000 YR</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">العملة</label>
+                                <select class="form-select" disabled>
+                                    <option>YER</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                                تأكيد وتنفيذ التحويل <i class="fas fa-paper-plane ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-show-modal="{{ confirmation_details|yesno:'true,false' }}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-check-circle me-2"></i> تأكيد عملية التحويل</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">من (المرسل)</h6>
+                        <h5 class="fw-bold">{{ confirmation_details.sender_name }}</h5>
+                        <small
+                            class="text-monospace bg-light px-2 rounded">{{confirmation_details.sender_account}}</small>
+                    </div>
+                    <i class="fas fa-arrow-down text-primary fa-2x my-2"></i>
+                    <div class="mb-4 mt-2">
+                        <h6 class="text-muted mb-2">إلى (المستفيد)</h6>
+                        <h5 class="fw-bold">{{ confirmation_details.receiver_name }}</h5>
+                        <small
+                            class="text-monospace bg-light px-2 rounded">{{confirmation_details.receiver_account}}</small>
+                    </div>
+                    <div class="alert alert-warning border-0 d-flex align-items-center justify-content-center">
+                        <div>
+                            <small class="d-block text-muted">المبلغ المراد تحويله</small>
+                            <h3 class="fw-bold mb-0 text-dark">{{ confirmation_details.amount }} <small class="fs-6">{{confirmation_details.currency }}</small></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 fw-bold"
+                        data-bs-dismiss="modal">إلغاء</button>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="sender_wallet" value="{{ form_data.sender_wallet }}">
+                        <input type="hidden" name="receiver_account" value="{{ form_data.receiver_account }}">
+                        <input type="hidden" name="amount" value="{{ form_data.amount }}">
+                        <button type="submit" name="confirm" value="1" class="btn btn-success px-5 fw-bold">
+                            تأكيد نهائي <i class="fas fa-check ms-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalEl = document.getElementById('confirmationModal');
+        if (modalEl && modalEl.dataset.showModal === 'true') {
+            var myModal = new bootstrap.Modal(modalEl);
+            myModal.show();
+        }
+    });
+</script>
+{% endblock %}

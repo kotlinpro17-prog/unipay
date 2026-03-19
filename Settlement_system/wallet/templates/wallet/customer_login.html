@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول الأفراد | محفظتي</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            background: #e8f8f5;
+            color: #16a085;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            background: #f9f9f9;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #1abc9c;
+            background: #fff;
+        }
+
+        .btn-login {
+            background: #1abc9c;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover {
+            background: #16a085;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card animate-zoom">
+        <div class="icon-circle">
+            <i class="fas fa-wallet"></i>
+        </div>
+        <h3 class="mb-4 fw-bold text-dark">دخول محفظتي</h3>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="alert alert-danger py-2 small">
+                اسم المستخدم أو كلمة المرور غير صحيحة
+            </div>
+            {% endif %}
+
+            <div class="mb-3 text-start">
+                <label class="form-label text-muted small">اسم المستخدم</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-user text-muted"></i></span>
+                    <input type="text" name="username" class="form-control border-start-0" required
+                        placeholder="User ID">
+                </div>
+            </div>
+
+            <div class="mb-4 text-start">
+                <label class="form-label text-muted small">كلمة المرور</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                    <input type="password" name="password" class="form-control border-start-0" required
+                        placeholder="••••••••">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-login mb-3">تسجيل الدخول</button>
+
+            <a href="{% url 'home' %}" class="text-decoration-none text-muted small">
+                <i class="fas fa-arrow-right me-1"></i> العودة للرئيسية
+            </a>
+        </form>
+    </div>
+
+</body>
+
+</html>

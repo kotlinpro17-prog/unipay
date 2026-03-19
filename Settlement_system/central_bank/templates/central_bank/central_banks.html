@@ -1,0 +1,410 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة البنوك الوسيطة | Bank Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0d1b2a;
+            /* Deep Navy Blue - Professional */
+            --secondary-color: #1b263b;
+            /* Lighter Navy */
+            --accent-color: #00b4d8;
+            /* Cyan/Blue for highlights */
+            --success-color: #2a9d8f;
+            --warning-color: #e9c46a;
+            --danger-color: #e76f51;
+            --light-bg: #f8f9fa;
+            --text-color: #333;
+            --sidebar-width: 280px;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            direction: rtl;
+            /* For Arabic */
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Logic */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Login Page Specifics */
+        .login-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+            border-radius: 16px;
+            border-top: 5px solid var(--accent-color);
+        }
+
+        .login-logo {
+            width: 80px;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .form-control {
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(0, 180, 216, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 27, 42, 0.3);
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        /* Dashboard Layout */
+        .wrapper {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        #sidebar {
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            background: var(--primary-color);
+            color: #fff;
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+
+        #sidebar.active {
+            margin-left: calc(var(--sidebar-width) * -1);
+            /* Standard behavior for LTR but customized for RTL below */
+            margin-right: calc(var(--sidebar-width) * -1);
+        }
+
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #sidebar ul.components {
+            padding: 20px 0;
+        }
+
+        #sidebar ul p {
+            color: #fff;
+            padding: 10px;
+        }
+
+        #sidebar ul li a {
+            padding: 15px 20px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            /* Align icon and text */
+            gap: 15px;
+            /* Space between icon and text */
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        #sidebar ul li a:hover,
+        #sidebar ul li.active>a {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        #sidebar ul li a i {
+            width: 25px;
+            /* Fixed width for icons alignment */
+            text-align: center;
+        }
+
+        #content {
+            width: 100%;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        .navbar {
+            padding: 15px 10px;
+            background: #fff;
+            border: none;
+            border-radius: 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Card Stats */
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: var(--card-shadow);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            font-size: 5rem;
+            opacity: 0.05;
+            transform: rotate(15deg);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Charts Area */
+        .chart-container {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+        }
+
+        /* Tables */
+        .table-custom {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .table-custom thead th {
+            background-color: var(--light-bg);
+            border-bottom: 2px solid #eee;
+            color: var(--secondary-color);
+            font-weight: 600;
+            padding: 1rem;
+        }
+
+        .table-custom tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f2f2f2;
+        }
+
+        /* Status Badges */
+        .badge-custom {
+            padding: 0.5em 1em;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .bg-success-subtle {
+            background-color: rgba(42, 157, 143, 0.15) !important;
+            color: #1f7a6f !important;
+        }
+
+        .bg-warning-subtle {
+            background-color: rgba(233, 196, 106, 0.2) !important;
+            color: #a67c00 !important;
+        }
+
+        .bg-danger-subtle {
+            background-color: rgba(231, 111, 81, 0.15) !important;
+            color: #b5462e !important;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        {% include 'includes/central_sidebar.html' %}
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-link text-dark"><i
+                            class="fas fa-bars fa-lg"></i></button>
+                    <span class="navbar-brand ms-3 fw-bold">{{ title|default:"إدارة المؤسسات المالية" }}</span>
+                    <div class="ms-auto">
+                        <a href="{% url 'bank_create' %}" class="btn btn-success"><i class="fas fa-plus me-2"></i> إضافة
+                            بنك جديد</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+
+                <div class="row mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">البنوك النشطة</h6>
+                                <h3 class="fw-bold text-success">{{ active_banks_count }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banks Grid -->
+                <div class="row g-4">
+                    {% for bank in banks %}
+                    <!-- Bank Card -->
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card h-100 border-0 shadow-sm hover-elevate transition-all">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary-subtle text-primary rounded-circle p-3 me-3"
+                                            style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-university fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-0">{{ bank.name }}</h5>
+                                            <small class="text-muted">الرمز: {{ bank.code }}</small>
+                                        </div>
+                                    </div>
+                                    {% if bank.is_active %}
+                                    <span class="badge bg-success rounded-pill px-3">نشط</span>
+                                    {% else %}
+                                    <span class="badge bg-danger rounded-pill px-3">موقوف</span>
+                                    {% endif %}
+                                </div>
+
+                                <hr class="my-3 opacity-25">
+
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">نوع البنك</small>
+                                        <span
+                                            class="badge bg-secondary-subtle text-dark">{{bank.get_bank_type_display}}</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">حالة الترخيص</small>
+                                        <span
+                                            class="badge {% if bank.license_status == 'ACTIVE' %}bg-success{% elif bank.license_status == 'PENDING' %}bg-warning{% else %}bg-danger{% endif %} text-white">{{bank.get_license_status_display}}</span>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <small class="text-muted d-block">رقم الترخيص / سويفت كود</small>
+                                        <span
+                                            class="fw-bold text-dark">{{bank.license_number|default:"-"}}/{{bank.swift_code|default:"-"}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2 mt-3">
+                                    <a href="{% url 'bank_edit' bank.pk %}"
+                                        class="btn btn-outline-primary flex-grow-1 btn-sm">تعديل</a>
+                                    <form action="{% url 'bank_toggle_active' bank.pk %}" method="post"
+                                        class="d-inline">
+                                        {% csrf_token %}
+                                        {% if bank.is_active %}
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="إيقاف">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                        {% else %}
+                                        <button type="submit" class="btn btn-outline-success btn-sm" title="تفعيل">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        {% endif %}
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <p class="text-center text-muted">لا يوجد بنوك مضافة حالياً.</p>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'includes/tab_session_js.html' %}
+    <script>
+        document.getElementById('sidebarCollapse').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

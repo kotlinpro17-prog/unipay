@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختيار التخصص - بوابة القبول الموحد</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body class="bg-light">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="dashboard.html">
+                <i class="fas fa-graduation-cap me-2"></i>بوابة القبول الموحد
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav align-items-center">
+                    <!-- User Menu (Simplified for brevity) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="https://ui-avatars.com/api/?name=Ahmed+Mohamed&background=random"
+                                class="rounded-circle me-1" width="32" height="32">
+                            أحمد محمد
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="settings.html">إعدادات الحساب</a></li>
+                            <li><a class="dropdown-item text-danger" href="../index.html">تسجيل الخروج</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-white p-3 shadow-sm"
+                style="min-height: calc(100vh - 60px);">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="dashboard.html">
+                                <i class="fas fa-home me-3 text-muted"></i>
+                                الرئيسية
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="profile.html">
+                                <i class="fas fa-user-edit me-3 text-muted"></i>
+                                بيانات الثانوية
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active d-flex align-items-center rounded" href="universities.html">
+                                <i class="fas fa-university me-3 text-success"></i>
+                                التقديم للجامعات
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="documents.html">
+                                <i class="fas fa-file-upload me-3 text-muted"></i>
+                                رفع الوثائق
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="status.html">
+                                <i class="fas fa-clipboard-list me-3 text-muted"></i>
+                                حالة الطلب
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center rounded" href="notifications.html">
+                                <i class="fas fa-bell me-3 text-muted"></i>
+                                الإشعارات
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <h6
+                                class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                                <span>الحساب</span>
+                            </h6>
+                            <a class="nav-link d-flex align-items-center rounded" href="settings.html">
+                                <i class="fas fa-cog me-3 text-muted"></i>
+                                الإعدادات
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5">
+                <div class="d-flex justify-content-between align-items-center pt-4 pb-3 mb-4 border-bottom sticky-top bg-light mx-n4 px-4" style="z-index: 1010; top: 60px; box-shadow: 0 10px 10px -10px rgba(0,0,0,0.05);">
+                    <div>
+                        <h1 class="h2 fw-bold text-dark">جامعة عدن - التخصصات المتاحة</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="universities.html">الجامعات</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">جامعة عدن</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <a href="universities.html" class="btn btn-outline-secondary">عودة للقائمة</a>
+                </div>
+
+                <div class="row">
+                    <!-- Majors List -->
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white py-3">
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="بحث عن تخصص...">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-select">
+                                            <option value="">كل الكليات</option>
+                                            <option>كلية الهندسة</option>
+                                            <option>كلية الطب</option>
+                                            <option>كلية الحاسبات</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-success w-100">تصفية</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group list-group-flush">
+                                <!-- Major Item -->
+                                <div class="list-group-item p-4">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <div class="d-flex align-items-center mb-1">
+                                                <h5 class="fw-bold mb-0 text-success">هندسة برمجيات</h5>
+                                                <span class="badge bg-light text-dark ms-2 border">كلية الحاسبات</span>
+                                            </div>
+                                            <p class="text-muted small mb-2">بكالوريوس • 4 سنوات • اللغة الإنجليزية</p>
+                                            <div class="d-flex gap-3 small text-muted">
+                                                <span><i class="fas fa-users me-1"></i> متاح: 45 مقعد</span>
+                                                <span><i class="fas fa-percent me-1"></i> الحد الأدنى: 85%</span>
+                                                <span class="text-success fw-bold"><i class="fas fa-tag me-1"></i> مجاني
+                                                    (عام)</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary btn-sm px-3 mt-2"
+                                            onclick="addToWishes('هندسة برمجيات', 'كلية الحاسبات')">
+                                            <i class="fas fa-plus me-1"></i> إضافة رغبة
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Major Item -->
+                                <div class="list-group-item p-4">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <div class="d-flex align-items-center mb-1">
+                                                <h5 class="fw-bold mb-0 text-success">طب بشري</h5>
+                                                <span class="badge bg-light text-dark ms-2 border">كلية الطب</span>
+                                            </div>
+                                            <p class="text-muted small mb-2">بكالوريوس • 7 سنوات • اللغة الإنجليزية</p>
+                                            <div class="d-flex gap-3 small text-muted">
+                                                <span><i class="fas fa-users me-1"></i> متاح: 120 مقعد</span>
+                                                <span><i class="fas fa-percent me-1"></i> الحد الأدنى: 90%</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary btn-sm px-3 mt-2"
+                                            onclick="addToWishes('طب بشري', 'كلية الطب')">
+                                            <i class="fas fa-plus me-1"></i> إضافة رغبة
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Major Item (Full) -->
+                                <div class="list-group-item p-4 bg-light">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <div class="d-flex align-items-center mb-1">
+                                                <h5 class="fw-bold mb-0 text-muted">صيدلة سريرية</h5>
+                                                <span class="badge bg-secondary ms-2">مكتمل</span>
+                                            </div>
+                                            <p class="text-muted small mb-2">بكالوريوس • 5 سنوات • اللغة الإنجليزية</p>
+                                            <div class="d-flex gap-3 small text-muted">
+                                                <span><i class="fas fa-users me-1"></i> المقاعد ممتلئة</span>
+                                                <span><i class="fas fa-percent me-1"></i> الحد الأدنى: 88%</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-secondary btn-sm px-3 mt-2" disabled>
+                                            غير متاح
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Wishes Panel -->
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm sticky-top" style="top: 80px;">
+                            <div class="card-header bg-success text-white py-3">
+                                <h5 class="mb-0 fw-bold"><i class="fas fa-star me-2"></i>رغباتي الحالية</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="wishesList">
+                                    <!-- Empty State -->
+                                    <div class="text-center py-4 text-muted" id="emptyWishes">
+                                        <i class="fas fa-clipboard-list fa-3x mb-3 opacity-50"></i>
+                                        <p>لم تقم بإضافة أي رغبات بعد.<br>يمكنك اختيار حتى 3 رغبات.</p>
+                                    </div>
+
+                                    <!-- Wish Item Template (Hidden) -->
+                                    <div class="alert alert-light border d-none mb-2 position-relative"
+                                        id="wishTemplate">
+                                        <h6 class="fw-bold mb-1 major-name">اسم التخصص</h6>
+                                        <small class="text-muted college-name">الكلية</small>
+                                        <button type="button" class="btn-close position-absolute top-0 end-0 m-2 small"
+                                            aria-label="Close"></button>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid mt-3">
+                                    <a href="documents.html" class="btn btn-primary disabled" id="nextStepBtn">
+                                        حفظ ومتابعة <i class="fas fa-arrow-left ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let wishes = [];
+
+        function addToWishes(major, college) {
+            if (wishes.length >= 3) {
+                alert('لا يمكن إضافة أكثر من 3 رغبات');
+                return;
+            }
+            if (wishes.some(w => w.major === major)) {
+                alert('هذا التخصص مضاف بالفعل');
+                return;
+            }
+
+            wishes.push({ major, college });
+            renderWishes();
+        }
+
+        function removeWish(index) {
+            wishes.splice(index, 1);
+            renderWishes();
+        }
+
+        function renderWishes() {
+            const list = document.getElementById('wishesList');
+            const emptyState = document.getElementById('emptyWishes');
+            const btn = document.getElementById('nextStepBtn');
+
+            // Clear current list except template/empty
+            // Actually simpler to rebuild HTML
+
+            if (wishes.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-4 text-muted" id="emptyWishes">
+                        <i class="fas fa-clipboard-list fa-3x mb-3 opacity-50"></i>
+                        <p>لم تقم بإضافة أي رغبات بعد.<br>يمكنك اختيار حتى 3 رغبات.</p>
+                    </div>`;
+                btn.classList.add('disabled');
+            } else {
+                let html = '';
+                wishes.forEach((wish, index) => {
+                    html += `
+                        <div class="alert alert-light border mb-2 position-relative">
+                            <span class="badge bg-success position-absolute top-0 start-0 m-2 rounded-circle">${index + 1}</span>
+                            <div class="ps-4">
+                                <h6 class="fw-bold mb-1 fs-6">${wish.major}</h6>
+                                <small class="text-muted">${wish.college}</small>
+                            </div>
+                            <button type="button" class="btn-close position-absolute top-0 end-0 m-2 p-1" style="font-size: 0.7rem;" onclick="removeWish(${index})"></button>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+                btn.classList.remove('disabled');
+            }
+        }
+    </script>
+</body>
+
+</html>

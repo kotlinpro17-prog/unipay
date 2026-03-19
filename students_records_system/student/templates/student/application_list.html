@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}طلباتي - بوابة القبول الموحد{% endblock %}
+
+{% block navbar %}
+{% include 'student/includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'student/includes/sidebar.html' %}
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5 pt-4">
+<div class="" >
+    <h2 class="mb-4 fw-bold text-success"><i class="fas fa-clipboard-list me-2"></i>طلبات الالتحاق الخاصة بي</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="p-3">#</th>
+                            <th class="p-3">الجامعة</th>
+                            <th class="p-3">التخصص</th>
+                            <th class="p-3">تاريخ التقديم</th>
+                            <th class="p-3">الحالة</th>
+                            <th class="p-3">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in applications %}
+                        <tr>
+                            <td class="p-3">{{ forloop.counter }}</td>
+                            <td class="p-3 fw-bold">{{ application.major.university.name }}</td>
+                            <td class="p-3">{{ application.major.name }}</td>
+                            <td class="p-3">{{ application.applied_at|date:"Y-m-d" }}</td>
+                            <td class="p-3">
+                                {% if application.status == 'PENDING' %}
+                                <span class="badge bg-warning text-dark">قيد المراجعة</span>
+                                {% elif application.status == 'ACCEPTED' %}
+                                <span class="badge bg-success">مقبول</span>
+                                {% elif application.status == 'REJECTED' %}
+                                <span class="badge bg-danger">مرفوض</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-3">
+                                <a href="{% url 'application_detail' application.id %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> التفاصيل
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center p-5 text-muted">
+                                <i class="fas fa-folder-open fa-3x mb-3 d-block"></i>
+                                لم تقم بتقديم أي طلبات حتى الآن.
+                                <br>
+                                <a href="{% url 'university_list' %}" class="btn btn-success mt-3">تصفح الجامعات</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </main>
+    </div>
+</div>
+{% endblock %}

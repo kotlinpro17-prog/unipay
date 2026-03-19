@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ربط محفظة جديدة | Connect New Wallet</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Tajawal', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+            min-height: 100vh;
+        }
+
+        #sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: #0d1b2a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #sidebar ul.components {
+            padding: 1rem 0;
+            flex-grow: 1;
+        }
+
+        #sidebar ul li a {
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-right: 4px solid transparent;
+        }
+
+        #sidebar ul li a:hover,
+        #sidebar ul li.active>a {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-right: 4px solid #3a86ff;
+        }
+
+        #content {
+            flex-grow: 1;
+            padding: 0;
+            width: 100%;
+            background: #f8f9fa;
+        }
+
+        .navbar {
+            padding: 15px 1.5rem;
+            background: #fff !important;
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header d-flex align-items-center gap-3">
+                <div class="bg-primary text-white rounded p-1"><i class="fas fa-university fa-lg"></i></div>
+                <div>
+                    <h5 class="fw-bold mb-0">{{ bank.name|default:user.username }}</h5>
+                    <small class="text-muted">نظام إدارة المحافظ</small>
+                </div>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li class="active"><a href="{% url 'bank_wallets' %}"><i class="fas fa-wallet"></i> إدارة المحافظ</a>
+                </li>
+                <li><a href="{% url 'operations' %}"><i class="fas fa-comments-dollar"></i> العمليات (سحب/إيداع)</a>
+                </li>
+                <li><a href="{% url 'transfer' %}"><i class="fas fa-paper-plane"></i> التحويلات البنكية</a></li>
+                <li><a href="{% url 'bank_ledger' %}"><i class="fas fa-book"></i> دفتر الأستاذ (Ledger)</a></li>
+                <li><a href="{% url 'bank_compliance' %}"><i class="fas fa-user-check"></i> الامتثال (KYC/AML)</a></li>
+                <li><a href="{% url 'bank_settings' %}"><i class="fas fa-cog"></i> الإعدادات</a></li>
+            </ul>
+
+            <div class="mt-auto p-3">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger w-100 btn-sm"><i class="fas fa-sign-out-alt me-2"></i>
+                        تسجيل خروج</button>
+                </form>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-link text-dark">
+                        <i class="fas fa-bars fa-lg"></i>
+                    </button>
+                    <span class="navbar-brand ms-3 fw-bold">ربط محفظة جديدة</span>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm rounded-3">
+                            <div class="card-header bg-white py-3 border-bottom">
+                                <h5 class="fw-bold m-0 text-primary"><i class="fas fa-user-plus me-2"></i> بيانات العميل
+                                    الجديد</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="row g-3">
+                                        {% if form.non_field_errors %}
+                                        <div class="col-12">
+                                            {% for error in form.non_field_errors %}
+                                            <div class="alert alert-danger py-2 mb-2">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">الاسم الأول</label>
+                                            {{ form.first_name }}
+                                            {% if form.first_name.errors %}
+                                            <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">اسم العائلة</label>
+                                            {{ form.last_name }}
+                                            {% if form.last_name.errors %}
+                                            <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="col-12">
+                                            <hr class="text-muted">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">اسم المستخدم (للدخول)</label>
+                                            {{ form.username }}
+                                            <div class="form-text">سيستخدم هذا الاسم للدخول إلى التطبيق</div>
+                                            {% if form.username.errors %}
+                                            <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">كلمة المرور</label>
+                                            {{ form.password }}
+                                            {% if form.password.errors %}
+                                            <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">البريد الإلكتروني</label>
+                                            {{ form.email }}
+                                            {% if form.email.errors %}
+                                            <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">رقم الهاتف</label>
+                                            {{ form.phone_number }}
+                                            {% if form.phone_number.errors %}
+                                            <div class="text-danger small mt-1">{{ form.phone_number.errors.0 }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold">الرقم الوطني / رقم المرجع
+                                                (Reference/National ID)</label>
+                                            {{ form.external_id }}
+                                            {% if form.external_id.errors %}
+                                            <div class="text-danger small mt-1">{{ form.external_id.errors.0 }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="col-12 mt-4 d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary px-4 fw-bold">
+                                                <i class="fas fa-check-circle me-2"></i> إنشاء المحفظة
+                                            </button>
+                                            <a href="{% url 'bank_wallets' %}"
+                                                class="btn btn-outline-secondary px-4">إلغاء</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

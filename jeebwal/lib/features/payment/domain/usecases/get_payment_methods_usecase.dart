@@ -1,0 +1,17 @@
+import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/payment_method.dart';
+import '../repositories/payment_repository.dart';
+
+class GetPaymentMethodsUseCase
+    implements UseCase<List<PaymentMethod>, NoParams> {
+  final PaymentRepository repository;
+
+  GetPaymentMethodsUseCase(this.repository);
+
+  @override
+  Future<Either<Failure, List<PaymentMethod>>> call(NoParams params) async {
+    return await repository.getPaymentMethods();
+  }
+}

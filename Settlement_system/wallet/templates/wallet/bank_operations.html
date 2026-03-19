@@ -1,0 +1,324 @@
+{% extends 'wallet/bank_dashboard.html' %}
+{% load static %}
+
+{% block title %}العمليات (سحب/إيداع) | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="fw-bold text-dark">العمليات النقدية</h3>
+            <p class="text-muted">إدارة عمليات الإيداع والسحب للمحافظ الإلكترونية</p>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-white border-bottom p-0">
+                    <ul class="nav nav-tabs nav-fill" id="operationTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active py-3 fw-bold" id="deposit-tab" data-bs-toggle="tab"
+                                data-bs-target="#deposit" type="button" role="tab" aria-controls="deposit"
+                                aria-selected="true">
+                                <i class="fas fa-arrow-down text-success me-2"></i> إيداع نقدي
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link py-3 fw-bold" id="withdraw-tab" data-bs-toggle="tab"
+                                data-bs-target="#withdraw" type="button" role="tab" aria-controls="withdraw"
+                                aria-selected="false">
+                                <i class="fas fa-arrow-up text-danger me-2"></i> سحب نقدي
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="tab-content" id="operationTabsContent">
+
+                        <!-- DEPOSIT TAB -->
+                        <div class="tab-pane fade show active" id="deposit" role="tabpanel"
+                            aria-labelledby="deposit-tab">
+                            <div id="deposit-instructions"
+                                class="alert alert-info border-0 d-flex align-items-center mb-4">
+                                <i class="fas fa-info-circle fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">تعليمات الإيداع</h6>
+                                    <small>سيتم إضافة المبلغ فوراً إلى رصيد العميل. يرجى التأكد من استلام النقد
+                                        أولاً.</small>
+                                </div>
+                            </div>
+
+                            <form method="post" action="{% url 'operations' %}" class="needs-validation operation-form"
+                                novalidate id="depositForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="operation_type" value="DEPOSIT">
+
+                                <div class="mb-3">
+                                    <label for="id_account_number_d" class="form-label fw-bold">رقم المحفظة أو رقم
+                                        الهاتف</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i
+                                                class="fas fa-wallet text-muted"></i></span>
+                                        <input type="text" name="account_number" class="form-control lookup-input"
+                                            placeholder="أدخل رقم المحفظة أو رقم الهاتف" required
+                                            id="id_account_number_d" value="{{ form.account_number.value|default:'' }}">
+                                    </div>
+                                    {% if form.account_number.errors %}
+                                    <div class="text-danger small mt-1">{{ form.account_number.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Verification Result for Deposit -->
+                                <div class="verification-card mb-3 d-none">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <div class="rounded-circle bg-white p-2 border">
+                                                        <i class="fas fa-user text-primary fa-lg"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="mb-0 fw-bold customer-name">---</h6>
+                                                    <small class="text-muted customer-info">---</small>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="badge bg-success customer-balance" data-balance="0">--- YER</span>
+                                                    <button type="button" class="btn btn-sm btn-outline-success mt-2 d-block w-100 btn-withdraw-all">
+                                                        <i class="fas fa-coins me-1"></i> سحب الكل
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="id_amount_d" class="form-label fw-bold">المبلغ</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">{{ bank.currency|default:"ر.ي" }}</span>
+                                        {{ form.amount }}
+                                    </div>
+                                    {% if form.amount.errors %}
+                                    <div class="text-danger small mt-1">{{ form.amount.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="id_description_d" class="form-label fw-bold">ملاحظات (اختياري)</label>
+                                    {{ form.description }}
+                                </div>
+
+                                <button type="submit" class="btn btn-success w-100 py-2 fw-bold submit-btn" disabled>
+                                    <i class="fas fa-check-circle me-2"></i> تأكيد الإيداع
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- WITHDRAW TAB -->
+                        <div class="tab-pane fade" id="withdraw" role="tabpanel" aria-labelledby="withdraw-tab">
+                            <div class="alert alert-warning border-0 d-flex align-items-center mb-4">
+                                <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">تعليمات السحب</h6>
+                                    <small>يجب التحقق من هوية العميل وتوفر الرصيد قبل تسليم النقد.</small>
+                                </div>
+                            </div>
+
+                            <form method="post" action="{% url 'operations' %}" class="needs-validation operation-form"
+                                novalidate id="withdrawForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="operation_type" value="WITHDRAWAL">
+
+                                <div class="mb-3">
+                                    <label for="id_account_number_w" class="form-label fw-bold">رقم المحفظة أو رقم
+                                        الهاتف</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i
+                                                class="fas fa-wallet text-muted"></i></span>
+                                        <input type="text" name="account_number" class="form-control lookup-input"
+                                            placeholder="أدخل رقم المحفظة أو رقم الهاتف" required
+                                            id="id_account_number_w" value="{{ form.account_number.value|default:'' }}">
+                                    </div>
+                                    {% if form.account_number.errors %}
+                                    <div class="text-danger small mt-1">{{ form.account_number.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Verification Result for Withdraw -->
+                                <div class="verification-card mb-3 d-none">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <div class="rounded-circle bg-white p-2 border">
+                                                        <i class="fas fa-user text-danger fa-lg"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="mb-0 fw-bold customer-name">---</h6>
+                                                    <small class="text-muted customer-info">---</small>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="badge bg-danger customer-balance" data-balance="0">--- YER</span>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2 d-block w-100 btn-withdraw-all">
+                                                        <i class="fas fa-coins me-1"></i> سحب الكل
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="id_amount_w" class="form-label fw-bold">المبلغ</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">{{ bank.currency|default:"ر.ي" }}</span>
+                                        {{ form.amount }}
+                                    </div>
+                                    {% if form.amount.errors %}
+                                    <div class="text-danger small mt-1">{{ form.amount.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="id_description_w" class="form-label fw-bold">ملاحظات (اختياري)</label>
+                                    {{ form.description }}
+                                </div>
+
+                                <button type="submit" class="btn btn-danger w-100 py-2 fw-bold submit-btn" disabled>
+                                    <i class="fas fa-minus-circle me-2"></i> تأكيد السحب
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const lookupInputs = document.querySelectorAll('.lookup-input');
+
+        lookupInputs.forEach(input => {
+            const form = input.closest('.operation-form');
+            const verificationCard = form.querySelector('.verification-card');
+            const submitBtn = form.querySelector('.submit-btn');
+
+            let timeout = null;
+
+            input.addEventListener('input', function () {
+                clearTimeout(timeout);
+                const query = this.value.trim();
+
+                if (query.length < 3) {
+                    verificationCard.classList.add('d-none');
+                    submitBtn.disabled = true;
+                    return;
+                }
+
+                timeout = setTimeout(() => {
+                    fetch(`/api/wallet/wallet-lookup/?q=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                verificationCard.classList.add('d-none');
+                                submitBtn.disabled = true;
+                            } else {
+                                form.querySelector('.customer-name').textContent = data.full_name;
+                                form.querySelector('.customer-info').textContent = `${data.account_number} | ${data.phone_number}`;
+                                
+                                const balanceBadge = form.querySelector('.customer-balance');
+                                balanceBadge.textContent = `${data.balance.toLocaleString()} YER`;
+                                balanceBadge.setAttribute('data-balance', data.balance);
+
+                                verificationCard.classList.remove('d-none');
+
+                                // Also check amount before enabling
+                                const amountInput = form.querySelector('input[type="number"]');
+                                if (amountInput && parseFloat(amountInput.value) > 0) {
+                                    submitBtn.disabled = false;
+                                } else {
+                                    submitBtn.disabled = true;
+                                }
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Verification error:', err);
+                            verificationCard.classList.add('d-none');
+                            submitBtn.disabled = true;
+                        });
+                }, 500);
+            });
+
+            // Add amount validation
+            const amountInput = form.querySelector('input[type="number"]');
+            if (amountInput) {
+                amountInput.setAttribute('min', '0.01');
+                amountInput.setAttribute('step', '0.01');
+                amountInput.addEventListener('input', function () {
+                    const val = parseFloat(this.value);
+                    const isWalletVerified = !verificationCard.classList.contains('d-none');
+                    const instructions = form.querySelector('.alert-info, .alert-warning');
+
+                    if (val > 0) {
+                        if (instructions) instructions.style.opacity = '1';
+                        this.classList.remove('is-invalid');
+                        if (isWalletVerified) {
+                            submitBtn.disabled = false;
+                        }
+                    } else {
+                        if (instructions) instructions.style.opacity = '0.4';
+                        submitBtn.disabled = true;
+                        if (this.value !== '') {
+                            this.classList.add('is-invalid');
+                        }
+                    }
+                });
+            }
+
+            // Handle Withdraw All button click
+            const withdrawAllBtn = form.querySelector('.btn-withdraw-all');
+            if (withdrawAllBtn) {
+                withdrawAllBtn.addEventListener('click', function() {
+                    const balance = form.querySelector('.customer-balance').getAttribute('data-balance');
+                    const amountInput = form.querySelector('input[type="number"]');
+                    if (amountInput && balance) {
+                        amountInput.value = balance;
+                        // Trigger input event to enable submit button
+                        amountInput.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+        });
+
+        // Auto-dismiss alerts after 4 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert-dismissible');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 4000);
+    });
+</script>
+{% endblock %}

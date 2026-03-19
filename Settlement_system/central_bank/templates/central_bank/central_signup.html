@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - البنك المركزي</title>
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Tajawal:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        /* Force Centering and Luxury Design */
+        .login-container-v2 {
+            min-height: 100vh !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background-color: #ffffff !important;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(13, 27, 42, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(13, 27, 42, 0.05) 0%, transparent 40%) !important;
+            position: relative !important;
+            padding: 2rem 0;
+            overflow-x: hidden !important;
+        }
+
+        .luxury-glass-card {
+            background: #0d1b2a !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(212, 175, 55, 0.5) !important;
+            border-radius: 12px !important;
+            padding: 3.5rem !important;
+            width: 95% !important;
+            max-width: 800px !important;
+            /* Wider for signup */
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3) !important;
+            position: relative !important;
+            z-index: 10000 !important;
+        }
+
+        .gold-accent-line {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #d4af37 100%);
+            margin: 1.5rem auto;
+        }
+
+        .luxury-input-v2 {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+            padding: 1rem !important;
+            border-radius: 4px !important;
+            transition: all 0.3s ease;
+        }
+
+        .luxury-input-v2:focus {
+            border-color: #d4af37 !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) !important;
+            outline: none;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #d4af37 100%);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .link-gold {
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .link-gold:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .geometric-pattern {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            opacity: 0.05 !important;
+            pointer-events: none !important;
+            background-image: repeating-linear-gradient(45deg, #0d1b2a 0, #0d1b2a 1px, transparent 1px, transparent 150px) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container-v2"
+        style="overflow-y: auto !important; position: relative !important; height: auto !important; min-height: 100vh !important;">
+        <div class="geometric-pattern"></div>
+
+        <div class="luxury-glass-card animate-fade-in text-center my-5" style="max-width: 850px !important;">
+            <div class="mb-5">
+                <i class="fas fa-university fa-3x mb-3"
+                    style="color: #d4af37; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));"></i>
+                <h1
+                    style="font-family: 'Playfair Display', serif; color: #ffffff; letter-spacing: 5px; font-weight: 700; text-transform: uppercase;">
+                    التسجيل المركزي
+                </h1>
+                <div class="gold-accent-line"></div>
+                <p
+                    style="color: rgba(255,255,255,0.6); font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase;">
+                    بروتوكول التصريح المؤسسي
+                </p>
+            </div>
+
+            {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} bg-transparent border-0 text-center small text-white py-2"
+                    role="alert"
+                    style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="text-start">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="alert alert-danger bg-transparent border-0 py-2 small mb-4 text-white"
+                    style="border-left: 4px solid #e76f51; background: rgba(231, 111, 81, 0.1);">
+                    <ul class="mb-0">
+                        {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    <div class="col-md-6 mb-2">
+                        <label
+                            style="color: #d4af37; display: block; margin-bottom: 0.5rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">اسم
+                            المستخدم الرسمي</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label
+                            style="color: #d4af37; display: block; margin-bottom: 0.5rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">البريد
+                            الإلكتروني المؤسسي</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label
+                            style="color: #d4af37; display: block; margin-bottom: 0.5rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">دليل
+                            الاتصال</label>
+                        {{ form.phone_number }}
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label
+                            style="color: #d4af37; display: block; margin-bottom: 0.5rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">مقر
+                            العمليات</label>
+                        {{ form.address }}
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label
+                            style="color: #d4af37; display: block; margin-bottom: 0.5rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">بيانات
+                            الاعتماد الأمنية</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label
+                            style="color: #d4af37; display: block; margin-bottom: 0.5rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">تأكيد
+                            بيانات الاعتماد</label>
+                        {{ form.confirm_password }}
+                    </div>
+                </div>
+
+                <div class="form-text mt-3 mb-4 text-white-50"
+                    style="font-size: 0.7rem; line-height: 1.6; opacity: 0.5;">
+                    * {{ form.password.help_text }}
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="terms" required
+                        style="background-color: rgba(255,255,255,0.05); border-color: rgba(212, 175, 55, 0.3);">
+                    <label class="form-check-label small" for="terms" style="color: rgba(255,255,255,0.6);">
+                        أوافق على <a href="#" class="link-gold">بروتوكول الاستخدام المركزي</a> والشروط الأمنية
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-gold w-100">
+                    تقديم طلب التصريح
+                </button>
+            </form>
+
+            <div class="text-center pt-4 mt-4" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                <p class="mb-2" style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">سلطة قائمة؟</p>
+                <a href="{% url 'central_login' %}" class="link-gold">
+                    تسجيل دخول آمن <i class="fas fa-arrow-left ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

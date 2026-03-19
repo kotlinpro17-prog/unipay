@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency_tags %}
+
+{% block title %}السجل المالي - بوابة القبول الموحد{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'student/includes/sidebar.html' %}
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5">
+            <div class="pt-4 pb-2 mb-4 border-bottom">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-6">
+                        <h1 class="h2 fw-bold text-dark mb-0">السجل المالي والمستحقات</h1>
+                        <p class="text-muted mb-0">متابعة الرسوم والمدفوعات والمستحقات الدراسية</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <a href="{% url 'print_statement' %}"
+                            class="btn btn-outline-primary shadow-sm d-inline-flex align-items-center gap-2">
+                            <i class="fas fa-print"></i>
+                            <span>طباعة كشف حساب</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm border-start border-4 border-danger h-100">
+                        <div class="card-body">
+                            <small class="text-muted d-block mb-1">إجمالي المستحقات (Charging)</small>
+                            <h3 class="fw-bold text-danger mb-0">{{ total_charges }} {{ currency_symbol }}</h3>
+                            <small class="text-danger d-block">$ {{ total_charges_usd }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm border-start border-4 border-success h-100">
+                        <div class="card-body">
+                            <small class="text-muted d-block mb-1">إجمالي المدفوعات (Paid)</small>
+                            <h3 class="fw-bold text-success mb-0">{{ total_payments }} {{ currency_symbol }}</h3>
+                            <small class="text-success d-block">$ {{ total_payments_usd }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm border-start border-4 border-primary h-100">
+                        <div class="card-body">
+                            <small class="text-muted d-block mb-1">الرصيد الحالي (Balance)</small>
+                            <h3 class="fw-bold text-primary mb-0">{{ current_balance }} {{ currency_symbol }}</h3>
+                            <small class="text-primary d-block">$ {{ current_balance_usd }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% for year, transactions in grouped_statement %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-primary">سجل السنة الدراسية: {{ year }}</h5>
+                    <span class="badge bg-soft-primary text-primary">السنة {{ year }}</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="p-3">التاريخ</th>
+                                    <th class="p-3">الوصف</th>
+                                    <th class="p-3">نوع الحركة</th>
+                                    <th class="p-3 text-center">مدين (عليك)</th>
+                                    <th class="p-3 text-center">دائن (لك)</th>
+                                    <th class="p-3 text-center">الرصيد التراكمي</th>
+                                    <th class="p-3 text-center">السند</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trans in transactions %}
+                                <tr>
+                                    <td class="p-3">{{ trans.date|date:"Y-m-d H:i" }}</td>
+                                    <td class="p-3">
+                                        <div class="fw-bold text-dark">{{ trans.description|beautify_description:False}}
+                                        </div>
+                                    </td>
+                                    <td class="p-3">
+                                        {% if trans.type == 'رسوم مستحقة' %}
+                                        <span class="badge bg-warning text-dark px-2">{{ trans.type }}</span>
+                                        {% else %}
+                                        <span class="badge bg-success px-2">{{ trans.type }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="p-3 text-center text-danger">
+                                        {% if trans.debit > 0 %}
+                                        {{ trans.debit }}
+                                        <div class="small text-muted">$ {{ trans.debit_usd }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="p-3 text-center text-success">
+                                        {% if trans.credit > 0 %}
+                                        {{ trans.credit }}
+                                        <div class="small text-muted">$ {{ trans.credit_usd }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="p-3 text-center fw-bold text-primary">
+                                        {{ trans.balance }}
+                                        <div class="small text-muted fw-normal">$ {{ trans.balance_usd }}</div>
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        {% if trans.credit > 0 %}
+                                        {% url 'print_payment_receipt' trans.id as receipt_url %}
+                                        <button type="button" onclick="showReceipt('{{ receipt_url }}?print=1')"
+                                            class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-file-invoice-dollar"></i> عرض السند
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center p-5 text-muted">
+                    <i class="fas fa-file-invoice-dollar fa-3x mb-3 d-block"></i>
+                    لا توجد حركات مالية بعد.
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Payment Instructions (Optional/Aesthetic) -->
+            <div class="card border-0 shadow-sm mt-4 bg-light">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-info-circle me-2 text-primary"></i>تعليمات الدفع:</h6>
+                    <p class="small text-muted mb-0">
+                        يرجى التوجه إلى قسم المحاسبة في الجامعة أو استخدام قنوات الدفع الإلكترونية المعتمدة
+                        (eFAWATEERcom) لتسديد ذممك المالية قبل موعد الامتحانات النهائية لضمان عدم حجب النتائج.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

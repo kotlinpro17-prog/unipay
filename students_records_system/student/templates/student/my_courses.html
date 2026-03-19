@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}موادي الدراسية - بوابة القبول الموحد{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'student/includes/sidebar.html' %}
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-4 pb-3 mb-4 border-bottom sticky-top bg-light mx-n4 px-4" style="z-index: 1010; top: 60px; box-shadow: 0 10px 10px -10px rgba(0,0,0,0.05);">
+                <h1 class="h2 fw-bold text-dark">موادي الدراسية الحالية</h1>
+                <div class="badge bg-primary fs-6">
+                    السنة {{ enrollment.current_year }} - الفصل {{ enrollment.current_semester }}
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="p-3">رمز المادة</th>
+                                    <th class="p-3">اسم المادة</th>
+                                    <th class="p-3 text-center">الساعات الدراسية</th>
+                                    <th class="p-3">الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sc in courses %}
+                                <tr>
+                                    <td class="p-3 font-monospace fw-bold text-primary">{{ sc.course.code }}</td>
+                                    <td class="p-3">
+                                        <div class="fw-bold">{{ sc.course.name }}</div>
+                                        <small class="text-muted">{{ sc.course.description|truncatechars:50 }}</small>
+                                    </td>
+                                    <td class="p-3 text-center">{{ sc.course.credit_hours }}</td>
+                                    <td class="p-3">
+                                        {% if sc.status == 'ENROLLED' %}
+                                        <span class="badge bg-info">مسجل</span>
+                                        {% elif sc.status == 'PASSED' %}
+                                        <span class="badge bg-success">ناجح</span>
+                                        {% elif sc.status == 'FAILED' %}
+                                        <span class="badge bg-danger">راسب</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ sc.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center p-5 text-muted">
+                                        <i class="fas fa-book-open fa-3x mb-3 d-block"></i>
+                                        لا توجد مواد مسجلة حالياً لهذا الفصل.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

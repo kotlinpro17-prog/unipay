@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة الدفع - بوابة القبول الموحد</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .payment-option-card {
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-option-card:hover {
+            border-color: #198754;
+            background-color: #f8f9fa;
+        }
+
+        .payment-option-card.active {
+            border-color: #198754;
+            background-color: #e8f5e9;
+        }
+
+        .wallet-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card border-0 shadow-lg" id="paymentCard">
+                    <div class="card-header bg-success text-white py-3 text-center">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-wallet me-2"></i>بوابة الدفع الإلكتروني</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Invoice Info -->
+                        <div class="text-center mb-4 border-bottom pb-4">
+                            <small class="text-muted d-block text-uppercase">المبلغ المستحق</small>
+                            <h2 class="fw-bold fs-1 text-dark mb-1">5,000 <span class="fs-6 text-muted">ر.ي</span></h2>
+                            <span class="badge bg-light text-dark border">رسوم تنسيق - جامعة عدن</span>
+                        </div>
+
+                        <!-- Wallet Selection -->
+                        <h6 class="fw-bold mb-3">اختر وسيلة الدفع</h6>
+                        <div class="row g-2 mb-4">
+                            <div class="col-4">
+                                <div class="payment-option-card rounded p-2 text-center h-100"
+                                    onclick="selectWallet(this, 'jawali')">
+                                    <i class="fas fa-money-bill-wave fa-2x text-success mb-1"></i>
+                                    <small class="d-block fw-bold" style="font-size: 0.7rem;">جوالي</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Form -->
+                        <form id="paymentForm">
+                            <div class="mb-3">
+                                <label class="form-label">رقم الهاتف المرتبط بالمحفظة</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input type="tel" class="form-control" placeholder="77xxxxxxx" required>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-lock me-2"></i>تأكيد الدفع
+                                </button>
+                                <a href="dashboard.html" class="btn btn-link text-muted text-decoration-none">إلغاء
+                                    والعودة</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Processing Screen (Hidden) -->
+                <div class="card border-0 shadow-lg d-none text-center p-5" id="processingCard">
+                    <div class="py-5">
+                        <div class="spinner-border text-success mb-4" style="width: 4rem; height: 4rem;" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="fw-bold mb-2">جاري معالجة الدفع...</h5>
+                        <p class="text-muted">يرجى تأكيد العملية من هاتفك</p>
+                    </div>
+                </div>
+
+                <!-- Success Screen (Hidden) -->
+                <div class="card border-0 shadow-lg d-none text-center p-5" id="successCard">
+                    <div class="py-4">
+                        <div class="my-3">
+                            <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2 text-success">تم الدفع بنجاح!</h4>
+                        <p class="text-muted mb-4">رقم العملية: #TRX-998877</p>
+                        <hr>
+                        <div class="d-grid">
+                            <a href="status.html" class="btn btn-primary">العودة لحالة الطلب</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function selectWallet(element, wallet) {
+            document.querySelectorAll('.payment-option-card').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Switch to processing
+            document.getElementById('paymentCard').classList.add('d-none');
+            document.getElementById('processingCard').classList.remove('d-none');
+
+            // Fake processing delay (3 seconds)
+            setTimeout(() => {
+                document.getElementById('processingCard').classList.add('d-none');
+                document.getElementById('successCard').classList.remove('d-none');
+            }, 3000);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}السجل الأكاديمي - بوابة القبول الموحد{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'student/includes/sidebar.html' %}
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5" style="padding-top: 50px !important;">
+            <div class="pt-4 pb-2 mb-4 border-bottom">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-6">
+                        <h1 class="h2 fw-bold text-dark mb-0">السجل الأكاديمي (كشف العلامات)</h1>
+                        <p class="text-muted mb-0">سجل الدرجات والمواد المنجزة للطالب</p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-md-end gap-3">
+                            <div class="text-center p-3 bg-white shadow-sm rounded-3 border-start border-4 border-success"
+                                style="min-width: 140px;">
+                                <small class="text-muted d-block mb-1">المعدل التراكمي</small>
+                                <span class="fw-bold text-success fs-4">{{ enrollment.gpa|floatformat:2 }}%</span>
+                            </div>
+                            <div class="text-center p-3 bg-white shadow-sm rounded-3 border-start border-4 border-primary"
+                                style="min-width: 140px;">
+                                <small class="text-muted d-block mb-1">الساعات المنجزة</small>
+                                <span class="fw-bold text-primary fs-4">{{ enrollment.total_credits }} ساعة</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% for semester_name, courses in semesters.items %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold text-primary">{{ semester_name }}</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="p-3">المادة</th>
+                                    <th class="p-3 text-center">الساعات</th>
+                                    <th class="p-3 text-center">العلامة</th>
+                                    <th class="p-3 text-center">التقدير</th>
+                                    <th class="p-3 text-center">الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sc in courses %}
+                                <tr>
+                                    <td class="p-3">
+                                        <div class="fw-bold">{{ sc.course.name }}</div>
+                                        <small class="text-muted">{{ sc.course.code }}</small>
+                                    </td>
+                                    <td class="p-3 text-center">{{ sc.course.credit_hours }}</td>
+                                    <td class="p-3 text-center fw-bold">
+                                        {% if sc.grade is not None %}
+                                        {{ sc.grade|floatformat:0 }}
+                                        {% else %}
+                                        --
+                                        {% endif %}
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        {% if sc.grade >= 90 %}امتياز
+                                        {% elif sc.grade >= 80 %}جيد جداً
+                                        {% elif sc.grade >= 70 %}جيد
+                                        {% elif sc.grade >= 50 %}مقبول
+                                        {% elif sc.grade is not None %}ضعيف
+                                        {% else %}--{% endif %}
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        {% if sc.status == 'PASSED' %}
+                                        <span class="text-success"><i class="fas fa-check-circle"></i> ناجح</span>
+                                        {% elif sc.status == 'FAILED' %}
+                                        <span class="text-danger"><i class="fas fa-times-circle"></i> راسب</span>
+                                        {% else %}
+                                        <span class="text-muted">{{ sc.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info text-center p-5">
+                <i class="fas fa-info-circle fa-3x mb-3 d-block"></i>
+                لا توجد سجلات أكاديمية سابقة بعد.
+            </div>
+            {% endfor %}
+        </main>
+    </div>
+</div>
+{% endblock %}

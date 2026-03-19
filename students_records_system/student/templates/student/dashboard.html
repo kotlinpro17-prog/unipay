@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}لوحة تحكم الطالب - بوابة القبول الموحد{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'student/includes/sidebar.html' %}
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content pb-5">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-4 pb-3 mb-4 border-bottom sticky-top bg-light mx-n4 px-4" style="z-index: 1010; top: 60px; box-shadow: 0 10px 10px -10px rgba(0,0,0,0.05);">
+                <div>
+                    <h1 class="h2 fw-bold text-dark">
+                        أهلاً بك، {{ user.username }} 👋
+                    </h1>
+                    <p class="text-muted mb-0">لوحة التحكم الخاصة بالطالب</p>
+                </div>
+            </div>
+
+            <!-- Internal Notifications -->
+            {% if notifications %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    {% for note in notifications %}
+                    <div class="alert alert-info border-0 shadow-sm d-flex align-items-center mb-2 animate__animated animate__fadeInRight"
+                        style="border-right: 5px solid #0d6efd !important;">
+                        <i class="fas fa-bell me-3 fa-lg text-primary"></i>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold mb-1">{{ note.title }}</h6>
+                                <small class="text-muted">{{ note.created_at|timesince }}</small>
+                            </div>
+                            <p class="mb-0 small">{{ note.message }}</p>
+                        </div>
+                        <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Status Overview Cards -->
+            <div class="row g-4 mb-4">
+                {% if enrollment %}
+                    {% if enrollment.status == 'PENDING_PAYMENT' %}
+                    <!-- PENDING PAYMENT ALERT CARD -->
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm border-start border-5 border-start-warning bg-light">
+                            <div class="card-body p-4 text-center">
+                                <i class="fas fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+                                <h3 class="fw-bold text-dark">إكمال إجراءات الفصل المطلوب</h3>
+                                <p class="text-muted fs-5">
+                                    {% if enrollment.current_year == 1 and enrollment.current_semester == 1 %}
+                                        لقد تم قبولك في الجامعة بنجاح! للبدء في دراستك والحصول على الرقم الأكاديمي، يرجى سداد
+                                        رسوم التسجيل (<strong>25,000 ريال</strong>).
+                                    {% else %}
+                                        أهلاً بك مجدداً! يرجى سداد الرسوم الدراسية المقررة للفصل الحالي (سنة {{ enrollment.current_year }} - فصل {{ enrollment.current_semester }}) لتجنب أي قيود آكاديمية.
+                                    {% endif %}
+                                </p>
+                                <div class="mt-4">
+                                    <p class="small text-muted mb-3"><i class="fas fa-info-circle me-1"></i> يمكنك الدفع عبر
+                                        المحفظة باستخدام <strong>رقمك الجامعي</strong> أو <strong>رقم هويتك</strong></p>
+                                    <a href="{% url 'my_fees' %}" class="btn btn-primary btn-lg px-5 fw-bold">
+                                        <i class="fas fa-receipt me-2"></i> عرض تفاصيل الرسوم والسداد
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- GPA Card -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100 border-start border-4 border-start-success">
+                            <div class="card-body">
+                                <a href="{% url 'my_transcript' %}" class="text-decoration-none text-dark">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="text-muted fw-bold mb-0">المعدل التراكمي</h6>
+                                        <i class="fas fa-graduation-cap text-success"></i>
+                                    </div>
+                                    <h3 class="fw-bold mb-0 text-success">{{ enrollment.gpa|floatformat:2 }}%</h3>
+                                    <small class="text-muted mt-2 d-block">سنة {{ enrollment.current_year }} - فصل {{ enrollment.current_semester }}</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Balance Card -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100 border-start border-4 {% if balance > 0 %}border-start-danger{% else %}border-start-success{% endif %}">
+                            <div class="card-body">
+                                <a href="{% url 'my_fees' %}" class="text-decoration-none text-dark">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="text-muted fw-bold mb-0">الرصيد المالي</h6>
+                                        <i class="fas fa-wallet {% if balance > 0 %}text-danger{% else %}text-success{% endif %}"></i>
+                                    </div>
+                                    <h3 class="fw-bold mb-0 {% if balance > 0 %}text-danger{% else %}text-success{% endif %}">
+                                        {{ balance }} {{ currency_symbol }}
+                                    </h3>
+                                    <small class="text-muted mt-2 d-block">إجمالي المستحقات غير المدفوعة</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Enrollment Status -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100 border-start border-4 border-start-primary">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="text-muted fw-bold mb-0">حالة القيد</h6>
+                                    <i class="fas fa-user-check text-primary"></i>
+                                </div>
+                                <h5 class="fw-bold mb-0 text-primary">{{ enrollment.get_status_display }}</h5>
+                                <small class="text-muted mt-2 d-block">{{ enrollment.major.name }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% elif applications_count > 0 %}
+                <!-- Account Status -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 border-start border-4 border-start-success">
+                        <div class="card-body">
+                            <a href="{% url 'student_settings' %}" class="text-decoration-none">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="text-muted fw-bold mb-0">حالة الحساب</h6>
+                                    <span class="badge bg-success rounded-pill">فعال</span>
+                                </div>
+                                <h5 class="fw-bold mb-0 text-success">مكتمل البيانات</h5>
+                                <small class="text-muted mt-2 d-block">تم التحقق من البريد ورقم الهاتف</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Coordination Status -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 border-start border-4 {% if has_accepted_application %}border-start-success{% elif has_pending_application %}border-start-info{% else %}border-start-danger{% endif %}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="text-muted fw-bold mb-0">حالة التنسيق</h6>
+                                {% if has_accepted_application %}
+                                <i class="fas fa-check-circle text-success"></i>
+                                {% elif has_pending_application %}
+                                <i class="fas fa-spinner fa-spin text-info"></i>
+                                {% else %}
+                                <i class="fas fa-times-circle text-danger"></i>
+                                {% endif %}
+                            </div>
+                            {% if has_accepted_application %}
+                            <h5 class="fw-bold mb-0 text-success">مقبول</h5>
+                            <small class="text-muted mt-2 d-block">تم قبولك في التخصص</small>
+                            {% elif has_pending_application %}
+                            <h5 class="fw-bold mb-0 text-info">تحت المراجعة</h5>
+                            <small class="text-muted mt-2 d-block">طلبك قيد التدقيق من الجامعة</small>
+                            {% else %}
+                            <h5 class="fw-bold mb-0 text-danger">تم رفضك</h5>
+                            <small class="text-muted mt-1 d-block">عذراً، لم يتم قبول طلبك</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if not enrollment and not applications_count > 0 %}
+            <!-- CTA for New Students -->
+            <div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
+                <div class="container-fluid py-3">
+                    <h2 class="display-6 fw-bold text-dark mb-3">ابدأ رحلتك الجامعية الآن</h2>
+                    <p class="col-md-8 fs-5 mx-auto text-muted mb-4">
+                        لم تقم بتقديم أي طلب للجامعات بعد. يمكنك استعراض التخصصات المتاحة والتقديم الآن بسهولة.
+                    </p>
+                    <a href="{% url 'university_list' %}" class="btn btn-success btn-lg px-5 gap-3 fw-bold">
+                        <i class="fas fa-university me-2"></i> استعراض الجامعات والتقديم
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Key Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="p-3 bg-white shadow-sm rounded text-center h-100">
+                        <i class="fas fa-university text-success fa-2x mb-2"></i>
+                        <h3 class="fw-bold mb-0">{{ universities_count }}</h3>
+                        <small class="text-muted fw-bold">جامعات متاحة</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 bg-white shadow-sm rounded text-center h-100">
+                        <i class="fas fa-book-open text-primary fa-2x mb-2"></i>
+                        <h3 class="fw-bold mb-0">{{ majors_count }}</h3>
+                        <small class="text-muted fw-bold">تخصص مفتوح</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 bg-danger text-white shadow-sm rounded h-100 d-flex justify-content-between align-items-center px-4">
+                        <div>
+                            <h5 class="fw-bold mb-1">آخر موعد للتنسيق</h5>
+                            <p class="mb-0 opacity-75">احرص على تقديم طلبك قبل الموعد</p>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="fw-bold mb-0">15</h3>
+                            <small>أغسطس 2025</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ministry Notifications -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 border-bottom-0">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-bullhorn me-2 text-warning"></i>تنبيهات هامة من الوزارة
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item p-3 border-start border-3 border-start-warning">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1 fw-bold">بدء مرحلة التنسيق الثانية</h6>
+                                <small class="text-muted">منذ يومين</small>
+                            </div>
+                            <p class="mb-1 text-muted small">
+                                تعلن وزارة التعليم العالي عن فتح باب التنسيق للمرحلة الثانية في الجامعات لجميع التخصصات.
+                                يرجى من الطلاب الإسراع في تقديم طلباتهم وتأكيد رغباتهم قبل انتهاء الفترة المحددة.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <a href="{% url 'university_list' %}" class="card shadow-sm border-0 text-decoration-none h-100 hover-card">
+                        <div class="card-body d-flex align-items-center p-4">
+                            <div class="bg-light p-3 rounded-circle text-primary me-3">
+                                <i class="fas fa-plus fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">تقديم طلب جديد</h5>
+                                <small class="text-muted">تصفح الجامعات والتخصصات</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'application_list' %}" class="card shadow-sm border-0 text-decoration-none h-100 hover-card">
+                        <div class="card-body d-flex align-items-center p-4">
+                            <div class="bg-light p-3 rounded-circle text-success me-3">
+                                <i class="fas fa-search fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">تتبع الطلبات</h5>
+                                <small class="text-muted">متابعة إجراءات القبول</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% if enrollment and enrollment.status == 'ACTIVE' %}
+                <div class="col-md-4">
+                    <a href="{% url 'view_id_card' %}" class="card shadow-sm border-0 text-decoration-none h-100 hover-card">
+                        <div class="card-body d-flex align-items-center p-4">
+                            <div class="bg-light p-3 rounded-circle text-warning me-3">
+                                <i class="fas fa-id-card fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">البطاقة الجامعية</h5>
+                                <small class="text-muted">عرض وطباعة الهوية</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

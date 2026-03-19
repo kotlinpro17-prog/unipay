@@ -1,0 +1,268 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل العملية | Transaction Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0d1b2a;
+            --secondary-color: #1b263b;
+            --accent-color: #00b4d8;
+            --success-color: #2a9d8f;
+            --warning-color: #e9c46a;
+            --danger-color: #e76f51;
+            --light-bg: #f8f9fa;
+            --text-color: #333;
+            --sidebar-width: 280px;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            direction: rtl;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        #sidebar {
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            background: var(--primary-color);
+            color: #fff;
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #sidebar ul.components {
+            padding: 20px 0;
+        }
+
+        #sidebar ul li a {
+            padding: 15px 20px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        #sidebar ul li a:hover,
+        #sidebar ul li.active>a {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        #content {
+            width: 100%;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        .navbar {
+            padding: 15px 10px;
+            background: #fff;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .detail-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            border: none;
+        }
+
+        .detail-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        {% include 'includes/central_sidebar.html' %}
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-link text-dark">
+                        <i class="fas fa-bars fa-lg"></i>
+                    </button>
+                    <span class="navbar-brand ms-3 fw-bold">تفاصيل العملية المالية</span>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="detail-card animate-fade-in">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div>
+                                    <h4 class="fw-bold mb-0">عملية رقم: {{ txn.transaction_id|stringformat:"s"|slice:":8"|upper }}</h4>
+                                    <small class="text-muted">{{ txn.timestamp|date:"Y-m-d H:i:s" }}</small>
+                                </div>
+                                <div class="text-end">
+                                    {% if txn.status == 'COMPLETED' %}
+                                    <span class="badge bg-success status-badge">مكتملة</span>
+                                    {% elif txn.status == 'PENDING' %}
+                                    <span class="badge bg-warning text-dark status-badge">قيد الانتظار</span>
+                                    {% elif txn.status == 'AWAITING_SETTLEMENT' %}
+                                    <span class="badge bg-info text-dark status-badge">بانتظار المقاصة</span>
+                                    {% else %}
+                                    <span class="badge bg-danger status-badge">فاشلة</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row g-4 mt-2">
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <div class="detail-label">نوع العملية</div>
+                                        <div class="detail-value">
+                                            {{ txn.get_transaction_type_display }}
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="detail-label">المبلغ</div>
+                                        <div class="detail-value text-primary fs-3">{{ txn.amount }} 
+                                            <small>
+                                                {% if txn.sender_wallet %}
+                                                    {{ txn.sender_wallet.currency|default:"YER" }}
+                                                {% elif txn.receiver_wallet %}
+                                                    {{ txn.receiver_wallet.currency|default:"YER" }}
+                                                {% else %}
+                                                    YER
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <div class="detail-label">المرسل</div>
+                                        <div class="detail-value">
+                                            {% if txn.sender_wallet and txn.sender_wallet.user %}
+                                                {{ txn.sender_wallet.user.get_full_name|default:txn.sender_wallet.user.username }}
+                                            {% else %}
+                                                نظام
+                                            {% endif %}
+                                        </div>
+                                        <small class="text-muted">
+                                            حساب: {% if txn.sender_wallet %}{{ txn.sender_wallet.account_number|default:"-" }}{% else %}-{% endif %}
+                                        </small>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="detail-label">المستقبل</div>
+                                        <div class="detail-value">
+                                            {% if txn.receiver_wallet and txn.receiver_wallet.user %}
+                                                {{ txn.receiver_wallet.user.get_full_name|default:txn.receiver_wallet.user.username }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </div>
+                                        <small class="text-muted">
+                                            حساب: {% if txn.receiver_wallet %}{{ txn.receiver_wallet.account_number|default:"-" }}{% else %}-{% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- معلومات البنوك -->
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <div class="detail-label">بنك المرسل</div>
+                                        <div class="detail-value">
+                                            {% if txn.sender_wallet and txn.sender_wallet.commercial_bank %}
+                                                {{ txn.sender_wallet.commercial_bank.name }}
+                                            {% else %}
+                                                البنك المركزي
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <div class="detail-label">بنك المستقبل</div>
+                                        <div class="detail-value">
+                                            {% if txn.receiver_wallet and txn.receiver_wallet.commercial_bank %}
+                                                {{ txn.receiver_wallet.commercial_bank.name }}
+                                            {% else %}
+                                                البنك المركزي
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="p-3 bg-light rounded">
+                                        <div class="detail-label">الوصف / البيان</div>
+                                        <div class="detail-value">{{ txn.description|default:"لا يوجد وصف" }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mt-4 text-center">
+                                    <a href="{% url 'central_dashboard' %}" class="btn btn-primary px-5">العودة للوحة
+                                        القيادة</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'includes/tab_session_js.html' %}
+    <script>
+        document.getElementById('sidebarCollapse').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>
